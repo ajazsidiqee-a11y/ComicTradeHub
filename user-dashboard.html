@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - ComicTradersHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background: #f4f6fb; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Header */
+        header { background: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #7c3aed; }
+        .brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: #fbbf24; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .header-links a { color: white; text-decoration: none; margin-left: 1.5rem; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+        .header-links a:hover { color: #fbbf24; }
+
+        /* Layout */
+        .dashboard-container { display: flex; flex: 1; max-width: 1300px; margin: 2rem auto; width: 100%; gap: 2rem; padding: 0 1.5rem; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); overflow: hidden; height: fit-content; }
+        .user-card { background: linear-gradient(135deg, #6d28d9, #4c1d95); color: white; padding: 2rem 1.5rem; text-align: center; }
+        .user-card .avatar { width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; border: 2px solid #fbbf24; }
+        .user-card h3 { font-size: 1.2rem; margin-bottom: 0.2rem; }
+        .user-card p { font-size: 0.8rem; color: #c4b5fd; }
+        
+        .nav-menu { list-style: none; padding: 1rem 0; }
+        .nav-menu li { padding: 0 1rem; margin-bottom: 0.2rem; }
+        .nav-menu button { width: 100%; text-align: left; background: transparent; border: none; padding: 0.8rem 1.2rem; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.8rem; }
+        .nav-menu button i { width: 20px; text-align: center; font-size: 1.1rem; }
+        .nav-menu button:hover { background: #f8fafc; color: #6d28d9; }
+        .nav-menu button.active { background: #f5f3ff; color: #6d28d9; font-weight: 600; border-left: 4px solid #6d28d9; }
+        
+        .logout-btn { border-top: 1px solid #f1f5f9; padding: 1rem; margin-top: 0.5rem; }
+        .logout-btn button { width: 100%; background: #fee2e2; color: #ef4444; border: none; padding: 0.8rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .logout-btn button:hover { background: #fecaca; }
+
+        /* Content Area */
+        .content-area { flex: 1; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); padding: 2rem 2.5rem; min-height: 500px; }
+        .panel { display: none; animation: fadeIn 0.4s ease; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .panel-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #f1f5f9; }
+        .panel-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #0f172a; display: flex; align-items: center; gap: 0.6rem; }
+        .panel-header h2 i { color: #fbbf24; }
+        .panel-header p { color: #64748b; font-size: 0.9rem; margin-top: 0.3rem; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea { width: 100%; max-width: 500px; padding: 0.8rem 1rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #6d28d9; }
+        .btn-submit { background: linear-gradient(135deg, #6d28d9, #4c1d95); color: white; border: none; padding: 0.8rem 2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(109, 40, 217, 0.3); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th { background: #f8fafc; padding: 1rem; text-align: left; font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 1rem; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; color: #334155; }
+        .status-badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-processing { background: #e0f2fe; color: #0284c7; }
+        .status-delivered { background: #dcfce7; color: #16a34a; }
+        .status-cancelled { background: #fee2e2; color: #dc2626; }
+        .empty-state { text-align: center; padding: 4rem 2rem; color: #94a3b8; }
+        .empty-state i { font-size: 4rem; color: #e2e8f0; margin-bottom: 1rem; }
+
+        /* Wishlist Grid */
+        .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
+        .wish-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; text-align: center; transition: transform 0.3s; }
+        .wish-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .wish-card img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; }
+        .wish-card h4 { font-size: 1rem; margin-bottom: 0.5rem; color: #0f172a; }
+        .wish-card p { color: #f97316; font-weight: 700; margin-bottom: 1rem; }
+        .btn-move { background: #f1f5f9; color: #6d28d9; border: none; padding: 0.5rem 1rem; border-radius: 8px; width: 100%; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+        .btn-move:hover { background: #6d28d9; color: white; }
+
+        @media (max-width: 900px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .nav-menu { display: flex; flex-wrap: wrap; justify-content: center; }
+            .nav-menu li { width: 33.33%; padding: 0 0.5rem; }
+            .nav-menu button { justify-content: center; flex-direction: column; gap: 0.3rem; padding: 0.8rem 0; text-align: center; font-size: 0.85rem; }
+        }
+        @media (max-width: 600px) { .nav-menu li { width: 50%; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="brand"><i class="fas fa-store"></i> ComicTradersHub</a>
+        <div class="header-links">
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="products.html"><i class="fas fa-box"></i> Shop</a>
+            <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-card">
+                <div class="avatar"><i class="fas fa-user"></i></div>
+                <h3 id="sideName">User Name</h3>
+                <p id="sideEmail">user@example.com</p>
+            </div>
+            <ul class="nav-menu">
+                <li><button class="tab-btn active" onclick="switchTab('profile', this)"><i class="fas fa-user-edit"></i> Profile</button></li>
+                <li><button class="tab-btn" onclick="switchTab('orders', this)"><i class="fas fa-shopping-bag"></i> Orders</button></li>
+                <li><button class="tab-btn" onclick="switchTab('payments', this)"><i class="fas fa-receipt"></i> Payments</button></li>
+                <li><button class="tab-btn" onclick="switchTab('wishlist', this)"><i class="fas fa-heart"></i> Wishlist</button></li>
+                <li><button class="tab-btn" onclick="switchTab('reviews', this)"><i class="fas fa-star"></i> Reviews</button></li>
+                <li><button class="tab-btn" onclick="switchTab('support', this)"><i class="fas fa-headset"></i> Support</button></li>
+            </ul>
+            <div class="logout-btn">
+                <button onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-area">
+            
+            <!-- Profile Panel -->
+            <div id="panel-profile" class="panel active">
+                <div class="panel-header">
+                    <h2><i class="fas fa-user-edit"></i> Personal Profile</h2>
+                    <p>Manage your account details and contact information.</p>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profName">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="profEmail" disabled style="background:#f8fafc; color:#94a3b8; cursor:not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="profPhone" placeholder="Your 10-digit phone number">
+                </div>
+                <button class="btn-submit" onclick="updateProfile()"><i class="fas fa-save"></i> Save Changes</button>
+                <div id="profAlert" style="margin-top:1rem; font-size:0.9rem; font-weight:600; display:none;"></div>
+            </div>
+
+            <!-- Orders Panel -->
+            <div id="panel-orders" class="panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-shopping-bag"></i> Order History</h2>
+                    <p>Track your recent purchases and delivery status.</p>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody">
+                            <tr><td colspan="5" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payments Panel -->
+            <div id="panel-payments" class="panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-receipt"></i> Payment Records</h2>
+                    <p>View your billing history and payment methods used.</p>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table id="paymentsTable">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Method</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsBody">
+                            <tr><td colspan="4" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading payments...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Wishlist Panel -->
+            <div id="panel-wishlist" class="panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-heart"></i> My Wishlist</h2>
+                    <p>Products you have saved for later.</p>
+                </div>
+                <div class="wishlist-grid" id="wishlistGrid">
+                    <!-- Rendered via JS -->
+                </div>
+            </div>
+
+            <!-- Reviews Panel -->
+            <div id="panel-reviews" class="panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-star"></i> My Reviews</h2>
+                    <p>Feedback you have left on our products.</p>
+                </div>
+                <div class="empty-state">
+                    <i class="far fa-star"></i>
+                    <p>You haven't submitted any reviews yet.</p>
+                    <a href="products.html" style="color:#6d28d9; font-weight:600; text-decoration:none; margin-top:1rem; display:inline-block;">Review a recent purchase</a>
+                </div>
+            </div>
+
+            <!-- Support Panel -->
+            <div id="panel-support" class="panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-headset"></i> Customer Support</h2>
+                    <p>Need help? Send a message directly to our team.</p>
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="suppSubject" placeholder="Order inquiry, Refund request, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="suppMessage" rows="5" placeholder="Please describe your issue in detail..."></textarea>
+                </div>
+                <button class="btn-submit" onclick="sendSupport()"><i class="fas fa-paper-plane"></i> Send Message</button>
+                <div id="suppAlert" style="margin-top:1rem; font-size:0.9rem; font-weight:600; display:none;"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:3000';
+        let currentUser = null;
+
+        // Auth Guard
+        function checkAuth() {
+            const sessionData = localStorage.getItem('cth_loggedIn');
+            if (!sessionData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = JSON.parse(sessionData);
+            
+            // If legacy login data (no ID), force re-login
+            if (!currentUser.id) {
+                localStorage.removeItem('cth_loggedIn');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Populate UI
+            document.getElementById('sideName').textContent = currentUser.name;
+            document.getElementById('sideEmail').textContent = currentUser.email;
+            
+            document.getElementById('profName').value = currentUser.name;
+            document.getElementById('profEmail').value = currentUser.email;
+            document.getElementById('profPhone').value = currentUser.phone || '';
+
+            loadOrders();
+            loadWishlist();
+        }
+
+        // Tab Switcher
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+            
+            btnElement.classList.add('active');
+            document.getElementById(`panel-${tabName}`).classList.add('active');
+        }
+
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem('cth_loggedIn');
+            window.location.href = 'index.html';
+        }
+
+        // Update Profile
+        async function updateProfile() {
+            const name = document.getElementById('profName').value.trim();
+            const phone = document.getElementById('profPhone').value.trim();
+            const alertBox = document.getElementById('profAlert');
+
+            if (!name) {
+                alertBox.textContent = 'Name cannot be empty.';
+                alertBox.style.color = '#ef4444';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/api/users/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    currentUser.name = name;
+                    currentUser.phone = phone;
+                    localStorage.setItem('cth_loggedIn', JSON.stringify(currentUser));
+                    document.getElementById('sideName').textContent = name;
+                    
+                    alertBox.textContent = 'Profile updated successfully!';
+                    alertBox.style.color = '#16a34a';
+                } else {
+                    alertBox.textContent = data.error || 'Update failed.';
+                    alertBox.style.color = '#ef4444';
+                }
+            } catch (err) {
+                alertBox.textContent = 'Server error.';
+                alertBox.style.color = '#ef4444';
+            }
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 3000);
+        }
+
+        // Load Orders & Payments
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API}/api/users/${currentUser.id}/orders`);
+                const orders = await res.json();
+
+                const ordersBody = document.getElementById('ordersBody');
+                const paymentsBody = document.getElementById('paymentsBody');
+
+                if (!orders.length) {
+                    const emptyMsg = `<tr><td colspan="5" class="empty-state"><i class="fas fa-box-open"></i><br>You haven't placed any orders yet.</td></tr>`;
+                    ordersBody.innerHTML = emptyMsg;
+                    paymentsBody.innerHTML = `<tr><td colspan="4" class="empty-state"><i class="fas fa-receipt"></i><br>No payment records found.</td></tr>`;
+                    return;
+                }
+
+                ordersBody.innerHTML = orders.map(o => {
+                    const items = JSON.parse(o.items || '[]');
+                    const itemsStr = items.map(i => `${i.name} (x${i.quantity || 1})`).join(', ');
+                    const statusClass = `status-${(o.status || 'pending').toLowerCase()}`;
+                    return `
+                        <tr>
+                            <td style="font-weight:600; color:#6d28d9;">${o.order_id}</td>
+                            <td>${o.created_at.split(' ')[0]}</td>
+                            <td style="max-width:250px; font-size:0.85rem;">${itemsStr}</td>
+                            <td style="font-weight:600;">₹${Number(o.total).toLocaleString('en-IN')}</td>
+                            <td><span class="status-badge ${statusClass}">${o.status}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+
+                paymentsBody.innerHTML = orders.map(o => `
+                    <tr>
+                        <td style="font-weight:600; color:#6d28d9;">${o.order_id}</td>
+                        <td>${o.created_at.split(' ')[0]}</td>
+                        <td style="text-transform:uppercase; font-size:0.85rem; font-weight:600;">${o.payment}</td>
+                        <td style="font-weight:600;">₹${Number(o.total).toLocaleString('en-IN')}</td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                document.getElementById('ordersBody').innerHTML = `<tr><td colspan="5" class="empty-state text-red-500">Failed to load data.</td></tr>`;
+            }
+        }
+
+        // Load Wishlist
+        function loadWishlist() {
+            const saved = JSON.parse(localStorage.getItem('savedItems')) || [];
+            const grid = document.getElementById('wishlistGrid');
+            
+            if (!saved.length) {
+                grid.style.display = 'block';
+                grid.innerHTML = `<div class="empty-state"><i class="far fa-heart"></i><p>Your wishlist is empty.</p><a href="products.html" style="color:#6d28d9; font-weight:600; text-decoration:none; margin-top:1rem; display:inline-block;">Explore Products</a></div>`;
+                return;
+            }
+
+            grid.style.display = 'grid';
+            grid.innerHTML = saved.map((item, index) => {
+                // Fallback image logic
+                const map = { 'Almonds':'images/Almond.webp', 'Walnuts':'images/Wulnuts.webp', 'Raisins':'images/Kishmish.webp', 'Peanuts':'images/Pea.webp' };
+                const img = map[item.name] || 'https://via.placeholder.com/100';
+                
+                return `
+                    <div class="wish-card">
+                        <img src="${img}" alt="${item.name}">
+                        <h4>${item.name}</h4>
+                        <p>₹${Number(item.price).toLocaleString('en-IN')}</p>
+                        <button class="btn-move" onclick="moveToCart(${index})"><i class="fas fa-cart-plus"></i> Move to Cart</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function moveToCart(index) {
+            let saved = JSON.parse(localStorage.getItem('savedItems')) || [];
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            cart.push({ ...saved[index], quantity: 1 });
+            saved.splice(index, 1);
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('savedItems', JSON.stringify(saved));
+            
+            loadWishlist();
+            alert('Item moved to cart!');
+        }
+
+        // Send Support Message
+        async function sendSupport() {
+            const subject = document.getElementById('suppSubject').value.trim();
+            const message = document.getElementById('suppMessage').value.trim();
+            const alertBox = document.getElementById('suppAlert');
+
+            if (!subject || !message) {
+                alertBox.textContent = 'Please fill out all fields.';
+                alertBox.style.color = '#ef4444';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/api/contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: currentUser.name, email: currentUser.email, subject, message })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alertBox.textContent = 'Message sent! We will contact you soon.';
+                    alertBox.style.color = '#16a34a';
+                    document.getElementById('suppSubject').value = '';
+                    document.getElementById('suppMessage').value = '';
+                } else {
+                    alertBox.textContent = data.error || 'Failed to send message.';
+                    alertBox.style.color = '#ef4444';
+                }
+            } catch (err) {
+                alertBox.textContent = 'Server error.';
+                alertBox.style.color = '#ef4444';
+            }
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 4000);
+        }
+
+        // Init
+        checkAuth();
+    </script>
+</body>
+</html>

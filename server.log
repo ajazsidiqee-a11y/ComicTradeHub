@@ -1,0 +1,6 @@
+◇ injected env (4) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+ENV CHECK: admin@comictraders.com admin123
+
+🚀 Server running at http://localhost:3000
+
+⚠️  MongoDB Atlas unavailable — using SQLite only.

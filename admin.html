@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ComicTradersHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9);
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #7c3aed;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .admin-header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fbbf24; }
+        .admin-header a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; }
+        .admin-header a:hover { color: #fbbf24; }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex; gap: 1rem; padding: 1.5rem 2rem;
+            background: #1e293b; border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #0f172a; border-radius: 12px; padding: 1rem 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+            border-left: 4px solid #6d28d9; flex: 1; min-width: 160px;
+        }
+        .stat-card.green  { border-left-color: #16a34a; }
+        .stat-card.orange { border-left-color: #f97316; }
+        .stat-card.blue   { border-left-color: #3b82f6; }
+        .stat-card i { font-size: 1.8rem; }
+        .stat-card.green  i { color: #4ade80; }
+        .stat-card.orange i { color: #fb923c; }
+        .stat-card.blue   i { color: #60a5fa; }
+        .stat-card .stat-purple i { color: #a78bfa; }
+        .stat-info strong { display: block; font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .stat-info span   { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 0.5rem; padding: 1.5rem 2rem 0; }
+        .tab {
+            padding: 0.6rem 1.4rem; border-radius: 10px 10px 0 0;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            border: none; background: #1e293b; color: #64748b;
+            transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .tab.active { background: #6d28d9; color: white; }
+        .tab:hover:not(.active) { background: #334155; color: #e2e8f0; }
+
+        /* Table Section */
+        .table-section { padding: 0 2rem 2rem; display: none; }
+        .table-section.active { display: block; }
+
+        .table-box {
+            background: #1e293b; border-radius: 0 14px 14px 14px;
+            overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .table-toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 1.5rem; border-bottom: 1px solid #334155;
+            flex-wrap: wrap; gap: 0.8rem;
+        }
+        .table-toolbar h3 { font-size: 1rem; font-weight: 700; color: #e2e8f0; }
+        .search-box {
+            background: #0f172a; border: 1px solid #334155; border-radius: 8px;
+            padding: 0.5rem 1rem; color: #e2e8f0; font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem; outline: none; width: 220px;
+        }
+        .search-box:focus { border-color: #6d28d9; }
+        .refresh-btn {
+            background: #6d28d9; color: white; border: none; padding: 0.5rem 1rem;
+            border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.82rem;
+            font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+            transition: opacity 0.2s;
+        }
+        .refresh-btn:hover { opacity: 0.85; }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { background: #0f172a; }
+        thead th { padding: 0.9rem 1.2rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        tbody tr { border-bottom: 1px solid #334155; transition: background 0.2s; }
+        tbody tr:hover { background: #0f172a; }
+        tbody td { padding: 0.9rem 1.2rem; font-size: 0.85rem; color: #cbd5e1; vertical-align: top; }
+        tbody td.name { font-weight: 600; color: #e2e8f0; }
+        .badge {
+            display: inline-block; padding: 0.2rem 0.7rem; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700;
+        }
+        .badge.answered  { background: #052e16; color: #4ade80; }
+        .badge.pending    { background: #431407; color: #fb923c; }
+        .badge.delivered  { background: #052e16; color: #4ade80; }
+        .badge.processing { background: #1e3a5f; color: #60a5fa; }
+        .badge.cancelled  { background: #450a0a; color: #f87171; }
+        .badge.active     { background: #052e16; color: #4ade80; }
+        .badge.blocked    { background: #450a0a; color: #f87171; }
+        .empty-row td { text-align: center; color: #475569; padding: 2rem; font-style: italic; }
+
+        .del-btn {
+            background: #450a0a; color: #f87171; border: none; padding: 0.3rem 0.7rem;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s;
+        }
+        .del-btn:hover { background: #7f1d1d; }
+        .edit-btn {
+            background: #1e3a5f; color: #60a5fa; border: none; padding: 0.3rem 0.7rem;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s;
+        }
+        .edit-btn:hover { background: #1e40af; }
+        .view-btn {
+            background: #1a2e1a; color: #4ade80; border: none; padding: 0.3rem 0.7rem;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s;
+        }
+        .view-btn:hover { background: #14532d; }
+        select.status-select {
+            background: #0f172a; border: 1px solid #334155; border-radius: 6px;
+            color: #e2e8f0; font-family: 'Poppins', sans-serif; font-size: 0.75rem;
+            padding: 0.25rem 0.5rem; cursor: pointer;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); z-index: 200;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: #1e293b; border-radius: 14px; padding: 2rem;
+            width: 560px; max-width: 95vw; border: 1px solid #334155;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;
+        }
+        .purchase-row {
+            background: #0f172a; border-radius: 8px; padding: 0.7rem 1rem;
+            margin-bottom: 0.5rem; font-size: 0.82rem;
+        }
+        .purchase-row .pid { color: #a78bfa; font-weight: 700; font-size: 0.75rem; }
+        .purchase-row .pitems { color: #cbd5e1; margin: 0.2rem 0; }
+        .purchase-row .pmeta { display: flex; gap: 1rem; margin-top: 0.3rem; }
+        .purchase-row .ptotal { color: #4ade80; font-weight: 700; }
+        .purchase-row .pstatus { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 700; }
+        .section-divider { border: none; border-top: 1px solid #334155; margin: 1rem 0; }
+        .modal h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.2rem; color: #e2e8f0; }
+        .modal label { font-size: 0.78rem; color: #94a3b8; display: block; margin-bottom: 0.3rem; }
+        .modal input {
+            width: 100%; background: #0f172a; border: 1px solid #334155;
+            border-radius: 8px; padding: 0.55rem 0.9rem; color: #e2e8f0;
+            font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+            outline: none; margin-bottom: 1rem;
+        }
+        .modal input:focus { border-color: #6d28d9; }
+        .modal-info p { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0.6rem; }
+        .modal-info p span { color: #a78bfa; font-weight: 600; }
+        .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.5rem; }
+        .btn-save { background: #6d28d9; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+        .btn-save:hover { opacity: 0.85; }
+        .btn-cancel { background: #334155; color: #e2e8f0; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.82rem; cursor: pointer; }
+        .btn-cancel:hover { background: #475569; }
+        .btn-block { background: #431407; color: #fb923c; border: none; padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s; }
+        .btn-block:hover { background: #7f1d1d; }
+        .btn-unblock { background: #052e16; color: #4ade80; border: none; padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s; }
+        .btn-unblock:hover { background: #14532d; }
+        .btn-reset { background: #1e3a5f; color: #93c5fd; border: none; padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: background 0.2s; }
+        .btn-reset:hover { background: #1e40af; }
+        .reply-inline { margin-top: 0.5rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .reply-inline textarea { flex: 1; min-width: 180px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 0.4rem 0.7rem; color: #e2e8f0; font-family: 'Poppins', sans-serif; font-size: 0.8rem; resize: vertical; outline: none; min-height: 60px; }
+        .reply-inline textarea:focus { border-color: #6d28d9; }
+        .reply-btn { background: #6d28d9; color: white; border: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; align-self: flex-end; }
+        .reply-btn:hover { opacity: 0.85; }
+        .existing-reply { background: #1e3a5f; border-radius: 6px; padding: 0.4rem 0.7rem; font-size: 0.8rem; color: #93c5fd; margin-top: 0.3rem; }
+
+        footer { text-align: center; padding: 1.5rem; color: #334155; font-size: 0.8rem; }
+
+        /* Answer inline form */
+        .answer-inline { margin-top: 0.5rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .answer-inline textarea {
+            flex: 1; min-width: 180px; background: #0f172a; border: 1px solid #334155;
+            border-radius: 6px; padding: 0.4rem 0.7rem; color: #e2e8f0;
+            font-family: 'Poppins', sans-serif; font-size: 0.8rem; resize: vertical;
+            outline: none; min-height: 60px;
+        }
+        .answer-inline textarea:focus { border-color: #6d28d9; }
+        .ans-btn {
+            background: #6d28d9; color: white; border: none; padding: 0.4rem 0.9rem;
+            border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+            align-self: flex-end;
+        }
+        .ans-btn:hover { opacity: 0.85; }
+        .faq-del-btn {
+            background: #450a0a; color: #f87171; border: none; padding: 0.4rem 0.7rem;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; align-self: flex-end;
+        }
+        .faq-del-btn:hover { background: #7f1d1d; }
+        .existing-ans { background: #052e16; border-radius: 6px; padding: 0.4rem 0.7rem; font-size: 0.8rem; color: #4ade80; margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <h1><i class="fas fa-database" style="color:#fbbf24;margin-right:0.5rem;"></i> Admin Dashboard</h1>
+        <a href="index.html"><i class="fas fa-home"></i> Back to Site</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-card green">
+            <i class="fas fa-users"></i>
+            <div class="stat-info"><strong id="totalUsers">0</strong><span>Registered Users</span></div>
+        </div>
+        <div class="stat-card orange">
+            <i class="fas fa-envelope"></i>
+            <div class="stat-info"><strong id="totalMessages">0</strong><span>Messages</span></div>
+        </div>
+        <div class="stat-card blue">
+            <i class="fas fa-question-circle"></i>
+            <div class="stat-info"><strong id="totalFaqs">0</strong><span>FAQ Questions</span></div>
+        </div>
+        <div class="stat-card" style="border-left-color:#a855f7;">
+            <i class="fas fa-shopping-bag" style="color:#c084fc;"></i>
+            <div class="stat-info"><strong id="totalOrders">0</strong><span>Orders</span></div>
+        </div>
+        <div class="stat-card" style="border-left-color:#f59e0b;">
+            <i class="fas fa-box" style="color:#fbbf24;"></i>
+            <div class="stat-info"><strong id="totalProducts">0</strong><span>Products</span></div>
+        </div>
+        <div class="stat-card" style="border-left-color:#10b981;">
+            <i class="fas fa-rupee-sign" style="color:#34d399;"></i>
+            <div class="stat-info"><strong id="totalRevenue">&#8377;0</strong><span>Total Revenue</span></div>
+        </div>
+        <div class="stat-card" style="border-left-color:#ef4444;">
+            <i class="fas fa-exclamation-triangle" style="color:#f87171;"></i>
+            <div class="stat-info"><strong id="lowStockCount">0</strong><span>Low / Out of Stock</span></div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('users',this)"><i class="fas fa-users"></i> Users</button>
+        <button class="tab" onclick="switchTab('messages',this)"><i class="fas fa-envelope"></i> Messages</button>
+        <button class="tab" onclick="switchTab('faqs',this)"><i class="fas fa-comments"></i> FAQs</button>
+        <button class="tab" onclick="switchTab('orders',this)"><i class="fas fa-shopping-bag"></i> Orders</button>
+        <button class="tab" onclick="switchTab('products',this)"><i class="fas fa-box"></i> Products</button>
+        <button class="tab" onclick="switchTab('payments',this)"><i class="fas fa-rupee-sign"></i> Payments</button>
+        <button class="tab" onclick="switchTab('inventory',this)"><i class="fas fa-warehouse"></i> Inventory</button>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-section active" id="tab-users">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-users" style="color:#4ade80;margin-right:0.5rem;"></i> Registered Users</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search users..." oninput="filterTable('usersTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="usersTable">
+                <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Orders</th><th>Items Bought</th><th>Registered On</th><th>Actions</th></tr></thead>
+                <tbody id="usersBody"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Messages Table -->
+    <div class="table-section" id="tab-messages">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-envelope" style="color:#fb923c;margin-right:0.5rem;"></i> Contact Messages</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search messages..." oninput="filterTable('messagesTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="messagesTable">
+                <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Subject</th><th>Message &amp; Reply</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="messagesBody"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FAQs Table -->
+    <div class="table-section" id="tab-faqs">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-comments" style="color:#60a5fa;margin-right:0.5rem;"></i> FAQ Questions</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search FAQs..." oninput="filterTable('faqsTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="faqsTable">
+                <thead><tr><th>#</th><th>Question &amp; Answer</th><th>Asked By</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+                <tbody id="faqsBody"><tr class="empty-row"><td colspan="6">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-section" id="tab-orders">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-shopping-bag" style="color:#c084fc;margin-right:0.5rem;"></i> Customer Orders</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search orders..." oninput="filterTable('ordersTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="ordersTable">
+                <thead><tr><th>#</th><th>Order ID</th><th>Customer</th><th>Phone</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody id="ordersBody"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="table-section" id="tab-products">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-box" style="color:#fbbf24;margin-right:0.5rem;"></i> Products</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search products..." oninput="filterTable('productsTable',this.value)">
+                    <button class="refresh-btn" style="background:#f59e0b;" onclick="openAddProductModal()"><i class="fas fa-plus"></i> Add Product</button>
+                    <button class="refresh-btn" onclick="loadProducts()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="productsTable">
+                <thead><tr><th>#</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Description</th><th>Added On</th><th>Actions</th></tr></thead>
+                <tbody id="productsBody"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Payments Table -->
+    <div class="table-section" id="tab-payments">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-rupee-sign" style="color:#34d399;margin-right:0.5rem;"></i> Payment Records</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search payments..." oninput="filterTable('paymentsTable',this.value)">
+                    <select class="search-box" id="paymentMethodFilter" onchange="filterPayments()" style="width:140px;">
+                        <option value="">All Methods</option>
+                        <option value="cod">COD</option>
+                        <option value="online">Online</option>
+                        <option value="upi">UPI</option>
+                        <option value="card">Card</option>
+                    </select>
+                    <button class="refresh-btn" onclick="loadPayments()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <!-- Summary Cards -->
+            <div id="paymentSummary" style="display:flex;gap:1rem;padding:1rem 1.5rem;flex-wrap:wrap;border-bottom:1px solid #334155;"></div>
+            <table id="paymentsTable">
+                <thead><tr><th>#</th><th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th><th>Subtotal</th><th>Shipping</th><th>Tax</th><th>Total</th><th>Method</th><th>Order Status</th><th>Date</th></tr></thead>
+                <tbody id="paymentsBody"><tr class="empty-row"><td colspan="12">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="table-section" id="tab-inventory">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-warehouse" style="color:#818cf8;margin-right:0.5rem;"></i> Inventory</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search inventory..." oninput="filterTable('inventoryTable',this.value)">
+                    <select class="search-box" id="stockFilter" onchange="filterInventory()" style="width:150px;">
+                        <option value="">All Stock Levels</option>
+                        <option value="out">Out of Stock</option>
+                        <option value="low">Low Stock (&lt;10)</option>
+                        <option value="ok">In Stock</option>
+                    </select>
+                    <button class="refresh-btn" onclick="loadInventory()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <!-- Inventory Summary -->
+            <div id="inventorySummary" style="display:flex;gap:1rem;padding:1rem 1.5rem;flex-wrap:wrap;border-bottom:1px solid #334155;"></div>
+            <table id="inventoryTable">
+                <thead><tr><th>#</th><th>Product</th><th>Category</th><th>Price</th><th>Current Stock</th><th>Units Sold</th><th>Stock Value</th><th>Status</th><th>Restock</th></tr></thead>
+                <tbody id="inventoryBody"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <h3 id="productModalTitle"><i class="fas fa-box" style="color:#fbbf24;margin-right:0.5rem;"></i> Add Product</h3>
+            <input type="hidden" id="productId">
+            <label>Name</label>
+            <input type="text" id="productName" placeholder="Product name">
+            <label>Category</label>
+            <input type="text" id="productCategory" placeholder="e.g. Nuts, Seeds, Dry Fruits">
+            <label>Price (₹)</label>
+            <input type="number" id="productPrice" placeholder="Price" min="0" step="0.01">
+            <label>Stock</label>
+            <input type="number" id="productStock" placeholder="Stock quantity" min="0">
+            <label>Description</label>
+            <input type="text" id="productDescription" placeholder="Short description">
+            <label>Image URL</label>
+            <input type="text" id="productImage" placeholder="images/product.webp or URL">
+            <label>Status</label>
+            <select id="productStatus" style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:0.55rem 0.9rem;color:#e2e8f0;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;margin-bottom:1rem;">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('productModal')">Cancel</button>
+                <button class="btn-save" onclick="saveProduct()"><i class="fas fa-save" style="margin-right:0.3rem;"></i>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View User Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal">
+            <h3><i class="fas fa-user-circle" style="color:#a78bfa;margin-right:0.5rem;"></i> User Details</h3>
+            <div class="modal-info" id="viewModalContent"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('viewModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <h3><i class="fas fa-user-edit" style="color:#60a5fa;margin-right:0.5rem;"></i> Edit User</h3>
+            <input type="hidden" id="editUserId">
+            <label>Name</label>
+            <input type="text" id="editName" placeholder="Full name">
+            <label>Phone</label>
+            <input type="text" id="editPhone" placeholder="Phone number">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+                <button class="btn-save" onclick="saveUser()"><i class="fas fa-save" style="margin-right:0.3rem;"></i>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div class="modal-overlay" id="resetModal">
+        <div class="modal">
+            <h3><i class="fas fa-key" style="color:#fbbf24;margin-right:0.5rem;"></i> Reset Password</h3>
+            <input type="hidden" id="resetUserId">
+            <label>New Password</label>
+            <input type="text" id="resetPassword" placeholder="Enter new password">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('resetModal')">Cancel</button>
+                <button class="btn-save" onclick="saveResetPassword()"><i class="fas fa-key" style="margin-right:0.3rem;"></i>Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>ComicTradersHub Admin &copy; 2024 &mdash; All data from comictraders.db</footer>
+
+    <script>
+        const API = 'http://localhost:3000';
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.table-section').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        async function loadAll() {
+            await loadUsers();
+            await loadMessages();
+            await loadFaqs();
+            await loadOrders();
+            await loadProducts();
+            await loadPayments();
+            await loadInventory();
+        }
+
+        async function loadUsers() {
+            try {
+                const res  = await fetch(API + '/api/users');
+                const data = await res.json();
+                document.getElementById('totalUsers').textContent = data.length;
+                const tbody = document.getElementById('usersBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No users registered yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((u, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="name"><i class="fas fa-user-circle" style="color:#a78bfa;margin-right:0.4rem;"></i>${u.name}</td>
+                        <td>${u.email}</td>
+                        <td>${u.phone}</td>
+                        <td><span class="badge ${u.status || 'active'}">${u.status || 'active'}</span></td>
+                        <td><span style="color:#c084fc;font-weight:700;">${u.order_count || 0}</span></td>
+                        <td><span style="color:#fbbf24;font-weight:700;">${u.items_count || 0}</span></td>
+                        <td>${u.created_at}</td>
+                        <td style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                            <button class="view-btn" onclick='openViewModal(${u.id})'><i class="fas fa-eye"></i> View</button>
+                            <button class="edit-btn" onclick='openEditModal(${JSON.stringify(u)})'><i class="fas fa-edit"></i> Edit</button>
+                            ${u.status === 'blocked'
+                                ? `<button class="btn-unblock" onclick="toggleUserStatus(${u.id},'active')"><i class="fas fa-unlock"></i> Unblock</button>`
+                                : `<button class="btn-block" onclick="toggleUserStatus(${u.id},'blocked')"><i class="fas fa-ban"></i> Block</button>`
+                            }
+                            <button class="btn-reset" onclick="openResetModal(${u.id})"><i class="fas fa-key"></i> Reset</button>
+                            <button class="del-btn" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('totalUsers').textContent = '!';
+                document.getElementById('usersBody').innerHTML = '<tr class="empty-row"><td colspan="9">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function toggleUserStatus(id, status) {
+            const action = status === 'blocked' ? 'block' : 'unblock';
+            if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+            await fetch(API + '/api/users/' + id + '/status', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            loadUsers();
+        }
+
+        function openResetModal(id) {
+            document.getElementById('resetUserId').value = id;
+            document.getElementById('resetPassword').value = '';
+            document.getElementById('resetModal').classList.add('open');
+        }
+
+        async function saveResetPassword() {
+            const id = document.getElementById('resetUserId').value;
+            const password = document.getElementById('resetPassword').value.trim();
+            if (!password) return alert('Please enter a new password.');
+            const res = await fetch(API + '/api/users/' + id + '/reset-password', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            const data = await res.json();
+            if (data.success) { closeModal('resetModal'); alert('Password reset successfully.'); }
+            else alert(data.error || 'Reset failed.');
+        }
+
+        async function openViewModal(userId) {
+            const userRes = await fetch(API + '/api/users');
+            const users = await userRes.json();
+            const u = users.find(x => x.id === userId);
+            if (!u) return;
+            const ordersRes = await fetch(API + '/api/users/' + userId + '/orders');
+            const orders = await ordersRes.json();
+
+            // Count total items across all orders
+            let totalItems = 0;
+            orders.forEach(o => { const items = JSON.parse(o.items || '[]'); items.forEach(it => totalItems += (it.quantity || 1)); });
+
+            let html = `
+                <p><i class="fas fa-user" style="color:#a78bfa;width:18px;"></i> &nbsp;<span>${u.name}</span></p>
+                <p><i class="fas fa-envelope" style="color:#fb923c;width:18px;"></i> &nbsp;<span>${u.email}</span></p>
+                <p><i class="fas fa-phone" style="color:#4ade80;width:18px;"></i> &nbsp;<span>${u.phone}</span></p>
+                <p><i class="fas fa-calendar" style="color:#60a5fa;width:18px;"></i> &nbsp;<span>${u.created_at}</span></p>
+                <hr class="section-divider">
+                <p style="font-weight:700;color:#e2e8f0;margin-bottom:0.4rem;">
+                    <i class="fas fa-shopping-bag" style="color:#c084fc;margin-right:0.4rem;"></i>
+                    Orders: <span style="color:#c084fc;">${orders.length}</span>
+                    &nbsp;&nbsp; Total Items Purchased: <span style="color:#fbbf24;">${totalItems}</span>
+                </p>`;
+            if (orders.length) {
+                orders.forEach(o => {
+                    const items = JSON.parse(o.items || '[]');
+                    const sc = o.status === 'Delivered' ? 'delivered' : o.status === 'Processing' ? 'processing' : o.status === 'Cancelled' ? 'cancelled' : 'pending';
+                    html += `<div class="purchase-row">
+                        <div class="pid">${o.order_id}</div>
+                        <div class="pitems">${items.map(it => `<span style="color:#e2e8f0;">${it.name}</span> <span style="color:#a78bfa;">x${it.quantity || 1}</span>`).join(' &nbsp;|&nbsp; ')}</div>
+                        <div class="pmeta">
+                            <span class="ptotal">&#8377;${Number(o.total).toLocaleString('en-IN')}</span>
+                            <span class="badge ${sc}">${o.status}</span>
+                            <span style="color:#64748b;font-size:0.7rem;">${o.created_at}</span>
+                        </div>
+                    </div>`;
+                });
+            } else {
+                html += '<p style="color:#475569;font-style:italic;font-size:0.82rem;">No orders yet.</p>';
+            }
+            document.getElementById('viewModalContent').innerHTML = html;
+            document.getElementById('viewModal').classList.add('open');
+        }
+
+        function openEditModal(u) {
+            document.getElementById('editUserId').value = u.id;
+            document.getElementById('editName').value  = u.name;
+            document.getElementById('editPhone').value = u.phone;
+            document.getElementById('editModal').classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        async function saveUser() {
+            const id    = document.getElementById('editUserId').value;
+            const name  = document.getElementById('editName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            if (!name || !phone) return alert('Name and phone are required.');
+            const res = await fetch(API + '/api/users/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone })
+            });
+            const data = await res.json();
+            if (data.success) { closeModal('editModal'); loadUsers(); }
+            else alert(data.error || 'Update failed.');
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Delete this user? This cannot be undone.')) return;
+            const res  = await fetch(API + '/api/users/' + id, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) loadUsers();
+            else alert(data.error || 'Delete failed.');
+        }
+
+        async function loadMessages() {
+            try {
+                const res  = await fetch(API + '/api/messages');
+                const data = await res.json();
+                document.getElementById('totalMessages').textContent = data.length;
+                const tbody = document.getElementById('messagesBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No messages yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((m, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="name">${m.name}</td>
+                        <td>${m.email}</td>
+                        <td>${m.subject}</td>
+                        <td style="max-width:280px;">
+                            <div style="color:#cbd5e1;margin-bottom:0.4rem;">${m.message}</div>
+                            ${m.reply ? `<div class="existing-reply"><i class="fas fa-reply" style="margin-right:0.3rem;"></i>${m.reply}</div>` : ''}
+                            <div class="reply-inline">
+                                <textarea id="msg-reply-${m.id}" placeholder="Write reply...">${m.reply || ''}</textarea>
+                                <button class="reply-btn" onclick="submitMessageReply(${m.id})"><i class="fas fa-paper-plane"></i> ${m.reply ? 'Update' : 'Reply'}</button>
+                            </div>
+                        </td>
+                        <td><span class="badge ${m.status === 'read' ? 'answered' : 'pending'}">${m.status || 'unread'}</span></td>
+                        <td>${m.created_at}</td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('messagesBody').innerHTML = '<tr class="empty-row"><td colspan="7">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function submitMessageReply(id) {
+            const reply = document.getElementById('msg-reply-' + id).value.trim();
+            if (!reply) return alert('Please write a reply first.');
+            await fetch(API + '/api/messages/' + id + '/reply', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reply })
+            });
+            await fetch(API + '/api/messages/' + id + '/status', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'read' })
+            });
+            loadMessages();
+        }
+
+        async function loadFaqs() {
+            try {
+                const res  = await fetch(API + '/api/faqs/all');
+                const data = await res.json();
+                document.getElementById('totalFaqs').textContent = data.length;
+                const tbody = document.getElementById('faqsBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No FAQs yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((f, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td style="max-width:260px;">
+                            <div style="font-weight:600;color:#e2e8f0;margin-bottom:0.3rem;">${f.question}</div>
+                            ${f.answer ? `<div class="existing-ans"><i class="fas fa-check-circle" style="margin-right:0.3rem;"></i>${f.answer}</div>` : ''}
+                            <div class="answer-inline">
+                                <textarea id="faq-ans-${f.id}" placeholder="Write answer here...">${f.answer || ''}</textarea>
+                            </div>
+                        </td>
+                        <td>${f.asked_by}</td>
+                        <td><span class="badge ${f.status === 'answered' ? 'answered' : 'pending'}">${f.status}</span></td>
+                        <td style="font-size:0.78rem;">${f.created_at}</td>
+                        <td>
+                            <div style="display:flex;flex-direction:column;gap:0.4rem;">
+                                <button class="ans-btn" onclick="submitFaqAnswer(${f.id})"><i class="fas fa-paper-plane"></i> ${f.answer ? 'Update' : 'Answer'}</button>
+                                <button class="faq-del-btn" onclick="deleteFaq(${f.id})"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('faqsBody').innerHTML = '<tr class="empty-row"><td colspan="6">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function submitFaqAnswer(id) {
+            const answer = document.getElementById('faq-ans-' + id).value.trim();
+            if (!answer) return alert('Please write an answer first.');
+            const res = await fetch(API + '/api/faqs/answer/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ answer })
+            });
+            const data = await res.json();
+            if (data.success) loadFaqs();
+            else alert(data.error || 'Failed to save answer.');
+        }
+
+        async function deleteFaq(id) {
+            if (!confirm('Delete this FAQ?')) return;
+            await fetch(API + '/api/faqs/' + id, { method: 'DELETE' });
+            loadFaqs();
+        }
+
+        async function loadOrders() {
+            try {
+                const res  = await fetch(API + '/api/orders');
+                const data = await res.json();
+                document.getElementById('totalOrders').textContent = data.length;
+                const tbody = document.getElementById('ordersBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No orders yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((o, i) => {
+                    const items = JSON.parse(o.items || '[]');
+                    const itemsStr = items.map(it => it.name + ' x' + it.quantity).join(', ');
+                    const sc = o.status === 'Delivered' ? 'delivered' : o.status === 'Processing' ? 'processing' : o.status === 'Cancelled' ? 'cancelled' : 'pending';
+                    return `<tr>
+                        <td>${i+1}</td>
+                        <td style="font-weight:700;color:#a78bfa;">${o.order_id}</td>
+                        <td class="name">${o.customer_name}</td>
+                        <td>${o.customer_phone}</td>
+                        <td style="max-width:160px;font-size:0.78rem;">${o.address}, ${o.district} - ${o.pincode}</td>
+                        <td style="max-width:180px;font-size:0.78rem;">${itemsStr}</td>
+                        <td style="font-weight:700;color:#4ade80;">&#8377;${Number(o.total).toLocaleString('en-IN')}</td>
+                        <td style="text-transform:capitalize;">${o.payment}</td>
+                        <td><select class="status-select" onchange="updateOrderStatus(${o.id},this.value)">${['Pending','Processing','Delivered','Cancelled'].map(s=>'<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+s+'</option>').join('')}</select></td>
+                        <td>${o.created_at}</td>
+                    </tr>`;
+                }).join('');
+            } catch(e) {
+                document.getElementById('ordersBody').innerHTML = '<tr class="empty-row"><td colspan="10">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function updateOrderStatus(id, status) {
+            await fetch(API + '/api/orders/' + id + '/status', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+        }
+
+        function filterTable(tableId, query) {
+            const rows = document.querySelectorAll('#' + tableId + ' tbody tr:not(.empty-row)');
+            const q = query.toLowerCase();
+            rows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+
+        async function loadProducts() {
+            try {
+                const res  = await fetch(API + '/api/products');
+                const data = await res.json();
+                document.getElementById('totalProducts').textContent = data.length;
+                const tbody = document.getElementById('productsBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No products yet. Click "Add Product" to add one.</td></tr>'; return; }
+                tbody.innerHTML = data.map((p, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="name">${p.image ? `<img src="${p.image}" style="width:32px;height:32px;object-fit:cover;border-radius:6px;margin-right:0.5rem;vertical-align:middle;">` : ''}${p.name}</td>
+                        <td><span style="color:#fbbf24;">${p.category}</span></td>
+                        <td style="color:#4ade80;font-weight:700;">&#8377;${Number(p.price).toLocaleString('en-IN')}</td>
+                        <td><span style="color:${p.stock < 10 ? '#f87171' : '#cbd5e1'};font-weight:600;">${p.stock}</span></td>
+                        <td><span class="badge ${p.status === 'active' ? 'active' : 'cancelled'}">${p.status}</span></td>
+                        <td style="max-width:160px;font-size:0.78rem;color:#94a3b8;">${p.description || '-'}</td>
+                        <td style="font-size:0.78rem;">${p.created_at}</td>
+                        <td style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                            <button class="edit-btn" onclick='openEditProductModal(${JSON.stringify(p)})'><i class="fas fa-edit"></i> Edit</button>
+                            <button class="del-btn" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('productsBody').innerHTML = '<tr class="empty-row"><td colspan="9">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        function openAddProductModal() {
+            document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-plus" style="color:#fbbf24;margin-right:0.5rem;"></i> Add Product';
+            document.getElementById('productId').value = '';
+            ['productName','productCategory','productPrice','productStock','productDescription','productImage'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('productStatus').value = 'active';
+            document.getElementById('productModal').classList.add('open');
+        }
+
+        function openEditProductModal(p) {
+            document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#60a5fa;margin-right:0.5rem;"></i> Edit Product';
+            document.getElementById('productId').value          = p.id;
+            document.getElementById('productName').value        = p.name;
+            document.getElementById('productCategory').value    = p.category;
+            document.getElementById('productPrice').value       = p.price;
+            document.getElementById('productStock').value       = p.stock;
+            document.getElementById('productDescription').value = p.description || '';
+            document.getElementById('productImage').value       = p.image || '';
+            document.getElementById('productStatus').value      = p.status || 'active';
+            document.getElementById('productModal').classList.add('open');
+        }
+
+        async function saveProduct() {
+            const id          = document.getElementById('productId').value;
+            const name        = document.getElementById('productName').value.trim();
+            const category    = document.getElementById('productCategory').value.trim();
+            const price       = parseFloat(document.getElementById('productPrice').value);
+            const stock       = parseInt(document.getElementById('productStock').value) || 0;
+            const description = document.getElementById('productDescription').value.trim();
+            const image       = document.getElementById('productImage').value.trim();
+            const status      = document.getElementById('productStatus').value;
+            if (!name || !category || isNaN(price)) return alert('Name, category and price are required.');
+            const method = id ? 'PUT' : 'POST';
+            const url    = id ? API + '/api/products/' + id : API + '/api/products';
+            const res    = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, category, price, stock, description, image, status })
+            });
+            const data = await res.json();
+            if (data.success) { closeModal('productModal'); loadProducts(); }
+            else alert(data.error || 'Save failed.');
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Delete this product? This cannot be undone.')) return;
+            const res  = await fetch(API + '/api/products/' + id, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) loadProducts();
+            else alert(data.error || 'Delete failed.');
+        }
+
+        let _paymentsData = [];
+
+        async function loadPayments() {
+            try {
+                const res  = await fetch(API + '/api/orders');
+                const data = await res.json();
+                _paymentsData = data;
+                renderPayments(data);
+            } catch(e) {
+                document.getElementById('paymentsBody').innerHTML = '<tr class="empty-row"><td colspan="12">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        function renderPayments(data) {
+            // Stats
+            const totalRev  = data.reduce((s, o) => s + Number(o.total), 0);
+            const codRev    = data.filter(o => o.payment.toLowerCase() === 'cod').reduce((s, o) => s + Number(o.total), 0);
+            const onlineRev = totalRev - codRev;
+            const codCount  = data.filter(o => o.payment.toLowerCase() === 'cod').length;
+            document.getElementById('totalRevenue').innerHTML = '&#8377;' + totalRev.toLocaleString('en-IN');
+            document.getElementById('paymentSummary').innerHTML = `
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #34d399;flex:1;min-width:140px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Total Revenue</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#34d399;">&#8377;${totalRev.toLocaleString('en-IN')}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #fb923c;flex:1;min-width:140px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">COD (${codCount} orders)</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#fb923c;">&#8377;${codRev.toLocaleString('en-IN')}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #60a5fa;flex:1;min-width:140px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Online (${data.length - codCount} orders)</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#60a5fa;">&#8377;${onlineRev.toLocaleString('en-IN')}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #a78bfa;flex:1;min-width:140px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Total Orders</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#a78bfa;">${data.length}</div>
+                </div>`;
+
+            const tbody = document.getElementById('paymentsBody');
+            if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="12">No payment records yet.</td></tr>'; return; }
+            tbody.innerHTML = data.map((o, i) => {
+                const items   = JSON.parse(o.items || '[]');
+                const itemStr = items.map(it => it.name + ' x' + (it.quantity || 1)).join(', ');
+                const method  = o.payment.toLowerCase();
+                const methodColor = method === 'cod' ? '#fb923c' : method === 'upi' ? '#a78bfa' : '#60a5fa';
+                const sc = o.status === 'Delivered' ? 'delivered' : o.status === 'Processing' ? 'processing' : o.status === 'Cancelled' ? 'cancelled' : 'pending';
+                return `<tr>
+                    <td>${i + 1}</td>
+                    <td style="font-weight:700;color:#a78bfa;font-size:0.78rem;">${o.order_id}</td>
+                    <td class="name">${o.customer_name}</td>
+                    <td>${o.customer_phone}</td>
+                    <td style="max-width:160px;font-size:0.78rem;">${itemStr}</td>
+                    <td>&#8377;${Number(o.subtotal || 0).toLocaleString('en-IN')}</td>
+                    <td>&#8377;${Number(o.shipping || 0).toLocaleString('en-IN')}</td>
+                    <td>&#8377;${Number(o.tax || 0).toLocaleString('en-IN')}</td>
+                    <td style="font-weight:700;color:#34d399;">&#8377;${Number(o.total).toLocaleString('en-IN')}</td>
+                    <td><span style="background:#1e293b;border:1px solid ${methodColor};color:${methodColor};padding:0.2rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;">${o.payment}</span></td>
+                    <td><span class="badge ${sc}">${o.status}</span></td>
+                    <td style="font-size:0.78rem;">${o.created_at}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterPayments() {
+            const method = document.getElementById('paymentMethodFilter').value.toLowerCase();
+            const filtered = method ? _paymentsData.filter(o => o.payment.toLowerCase().includes(method)) : _paymentsData;
+            renderPayments(filtered);
+        }
+
+        let _inventoryData = [];
+
+        async function loadInventory() {
+            try {
+                const [prodRes, ordRes] = await Promise.all([fetch(API + '/api/products'), fetch(API + '/api/orders')]);
+                const products = await prodRes.json();
+                const orders   = await ordRes.json();
+
+                // Build sold map: product name -> units sold (from delivered/processing orders)
+                const soldMap = {};
+                orders.forEach(o => {
+                    const items = JSON.parse(o.items || '[]');
+                    items.forEach(it => {
+                        const key = (it.name || '').toLowerCase();
+                        soldMap[key] = (soldMap[key] || 0) + (it.quantity || 1);
+                    });
+                });
+
+                _inventoryData = products.map(p => ({ ...p, sold: soldMap[p.name.toLowerCase()] || 0 }));
+                renderInventory(_inventoryData);
+            } catch(e) {
+                document.getElementById('inventoryBody').innerHTML = '<tr class="empty-row"><td colspan="9">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        function renderInventory(data) {
+            const outOfStock = data.filter(p => p.stock === 0).length;
+            const lowStock   = data.filter(p => p.stock > 0 && p.stock < 10).length;
+            const inStock    = data.filter(p => p.stock >= 10).length;
+            const totalVal   = data.reduce((s, p) => s + (p.stock * p.price), 0);
+            document.getElementById('lowStockCount').textContent = outOfStock + lowStock;
+
+            document.getElementById('inventorySummary').innerHTML = `
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #4ade80;flex:1;min-width:130px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">In Stock</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#4ade80;">${inStock}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #fbbf24;flex:1;min-width:130px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Low Stock</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#fbbf24;">${lowStock}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #f87171;flex:1;min-width:130px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Out of Stock</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#f87171;">${outOfStock}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #818cf8;flex:1;min-width:130px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Inventory Value</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#818cf8;">&#8377;${totalVal.toLocaleString('en-IN')}</div>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:0.8rem 1.2rem;border-left:4px solid #34d399;flex:1;min-width:130px;">
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Total Products</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#34d399;">${data.length}</div>
+                </div>`;
+
+            const tbody = document.getElementById('inventoryBody');
+            if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No products in inventory. Add products first.</td></tr>'; return; }
+            tbody.innerHTML = data.map((p, i) => {
+                const stockStatus = p.stock === 0 ? 'out' : p.stock < 10 ? 'low' : 'ok';
+                const statusLabel = stockStatus === 'out' ? 'Out of Stock' : stockStatus === 'low' ? 'Low Stock' : 'In Stock';
+                const statusColor = stockStatus === 'out' ? '#f87171' : stockStatus === 'low' ? '#fbbf24' : '#4ade80';
+                const statusBg    = stockStatus === 'out' ? '#450a0a' : stockStatus === 'low' ? '#422006' : '#052e16';
+                const stockVal    = (p.stock * p.price).toLocaleString('en-IN');
+                return `<tr>
+                    <td>${i + 1}</td>
+                    <td class="name">${p.image ? `<img src="${p.image}" style="width:30px;height:30px;object-fit:cover;border-radius:6px;margin-right:0.5rem;vertical-align:middle;">` : '<i class="fas fa-box" style="color:#64748b;margin-right:0.5rem;"></i>'}${p.name}</td>
+                    <td><span style="color:#fbbf24;">${p.category}</span></td>
+                    <td style="color:#34d399;font-weight:600;">&#8377;${Number(p.price).toLocaleString('en-IN')}</td>
+                    <td>
+                        <span style="font-size:1.1rem;font-weight:800;color:${statusColor};">${p.stock}</span>
+                        <span style="font-size:0.72rem;color:#64748b;"> units</span>
+                    </td>
+                    <td><span style="color:#c084fc;font-weight:600;">${p.sold}</span> <span style="font-size:0.72rem;color:#64748b;">units</span></td>
+                    <td style="color:#818cf8;font-weight:600;">&#8377;${stockVal}</td>
+                    <td><span style="background:${statusBg};color:${statusColor};padding:0.2rem 0.7rem;border-radius:20px;font-size:0.7rem;font-weight:700;">${statusLabel}</span></td>
+                    <td>
+                        <div style="display:flex;gap:0.4rem;align-items:center;">
+                            <input type="number" id="restock-${p.id}" min="1" placeholder="Qty" style="width:70px;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:0.3rem 0.5rem;color:#e2e8f0;font-family:'Poppins',sans-serif;font-size:0.8rem;outline:none;">
+                            <button onclick="restockProduct(${p.id},${p.stock})" style="background:#6d28d9;color:white;border:none;padding:0.3rem 0.7rem;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterInventory() {
+            const f = document.getElementById('stockFilter').value;
+            const filtered = !f ? _inventoryData
+                : f === 'out' ? _inventoryData.filter(p => p.stock === 0)
+                : f === 'low' ? _inventoryData.filter(p => p.stock > 0 && p.stock < 10)
+                : _inventoryData.filter(p => p.stock >= 10);
+            renderInventory(filtered);
+        }
+
+        async function restockProduct(id, currentStock) {
+            const qty = parseInt(document.getElementById('restock-' + id).value);
+            if (!qty || qty < 1) return alert('Enter a valid quantity to add.');
+            const product = _inventoryData.find(p => p.id === id);
+            if (!product) return;
+            const newStock = currentStock + qty;
+            const res = await fetch(API + '/api/products/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...product, stock: newStock })
+            });
+            const data = await res.json();
+            if (data.success) { loadInventory(); loadProducts(); }
+            else alert(data.error || 'Restock failed.');
+        }
+
+        // Guard: redirect to login if not authenticated
+        if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        loadAll();
+        setInterval(loadAll, 30000);
+    </script>
+</body>
+</html>

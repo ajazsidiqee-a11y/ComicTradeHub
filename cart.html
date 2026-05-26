@@ -1,0 +1,764 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - ComicTradersHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(160deg, #0a0a1a 0%, #0a1628 30%, #0a2010 60%, #1a0a0a 100%);
+            background-size: 400% 400%;
+            animation: bgShift 14s ease infinite;
+            min-height: 100vh;
+        }
+        @keyframes bgShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header { background: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9); border-bottom: 2px solid #7c3aed; position: sticky; top: 0; z-index: 100; padding: 1rem 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; max-width: 1520px; margin: 0 auto; padding: 0 2.5rem; }
+        .logo h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #fbbf24; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem; }
+        .logo h1 i { color: #fbbf24; font-size: 1.4rem; }
+        .logo h1 span { color: #fff; font-weight: 400; font-size: 1rem; letter-spacing: 0.5px; }
+        .nav-links { display: flex; list-style: none; gap: 0.3rem; justify-content: center; flex: 1; margin: 0 2rem; align-items: center; }
+        .nav-links li { flex: none; }
+        .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.15rem; border-radius: 25px; letter-spacing: 0.3px; white-space: nowrap; transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.25s; }
+        .nav-links a i { font-size: 0.82rem; opacity: 0.8; transition: opacity 0.2s; }
+        .nav-links a:hover { color: #fbbf24; background: rgba(251,191,36,0.13); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(251,191,36,0.18); }
+        .nav-links a:hover i { opacity: 1; }
+        .cart-nav-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b) !important; color: #1a1a1a !important; padding: 0.5rem 1.3rem !important; border-radius: 25px; font-weight: 700; box-shadow: 0 3px 12px rgba(251,191,36,0.4); }
+        .cart-nav-btn:hover { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #1a1a1a !important; box-shadow: 0 6px 20px rgba(251,191,36,0.55) !important; transform: translateY(-3px) !important; }
+
+        /* Page Hero — Midnight Blue Indigo */
+        .cart-hero {
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a5e 30%, #1e3a8a 60%, #1e1b4b 100%);
+            border-bottom: 2px solid rgba(99,102,241,0.4);
+            color: white; text-align: center; padding: 4rem 2rem 3.5rem;
+            position: relative; overflow: hidden;
+        }
+        .cart-hero::before {
+            content: '';
+            position: absolute; top: -60px; left: -80px;
+            width: 340px; height: 340px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cart-hero::after {
+            content: '';
+            position: absolute; bottom: -60px; right: -80px;
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cart-hero-inner { position: relative; z-index: 1; }
+        .cart-hero-inner::before {
+            content: '';
+            display: block; width: 80px; height: 3px; margin: 0 auto 1.2rem;
+            background: linear-gradient(90deg, transparent, #818cf8, transparent);
+            border-radius: 2px;
+        }
+        .cart-hero h2 {
+            font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 800;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 40px rgba(99,102,241,0.5);
+            letter-spacing: 1.5px; line-height: 1.2;
+        }
+        .cart-hero h2 span { color: #818cf8; text-shadow: 0 0 24px rgba(129,140,248,0.7); }
+        .cart-hero p {
+            color: rgba(255,255,255,0.5); font-size: 0.78rem;
+            margin-top: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .cart-hero-badges {
+            display: flex; justify-content: center; gap: 1.2rem;
+            margin-top: 1.4rem; flex-wrap: wrap;
+        }
+        .cart-hero-badges span {
+            background: rgba(236,72,153,0.15);
+            border: 1px solid rgba(236,72,153,0.45);
+            border-radius: 20px; padding: 0.35rem 1rem;
+            font-size: 0.78rem; font-weight: 600; color: #f9a8d4;
+            display: flex; align-items: center; gap: 0.45rem;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0 12px rgba(236,72,153,0.2);
+            transition: background 0.25s, box-shadow 0.25s, transform 0.25s;
+        }
+        .cart-hero-badges span:hover {
+            background: rgba(236,72,153,0.28);
+            box-shadow: 0 0 20px rgba(236,72,153,0.4);
+            transform: translateY(-2px);
+        }
+        .cart-hero-badges span i { color: #f472b6; font-size: 0.78rem; }
+
+        /* Layout */
+        .cart-wrapper { max-width: 1520px; margin: 2rem auto; padding: 0 2.5rem; display: grid; grid-template-columns: 1fr 440px; gap: 2rem; }
+
+        /* LEFT SIDE — Cart Items Panel: Pink */
+        .cart-panel {
+            display: flex; flex-direction: column; gap: 1rem;
+            background: linear-gradient(160deg, #2d0a1e 0%, #5b1a3a 40%, #831843 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 1.8rem;
+            border: 1px solid rgba(244,114,182,0.25);
+            border-top: 4px solid #ec4899;
+            box-shadow: 0 8px 40px rgba(236,72,153,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .cart-panel * { font-family: 'Georgia', 'Times New Roman', serif; }
+        .cart-panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(236,72,153,0.12);
+            padding: 1rem 1.5rem; border-radius: 14px;
+            border: 1px solid rgba(244,114,182,0.3);
+        }
+        .cart-panel-header h3 { font-size: 1.15rem; font-weight: 700; color: #f9a8d4; letter-spacing: 0.5px; }
+        .cart-panel-header span { font-size: 0.82rem; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.08); padding: 0.2rem 0.7rem; border-radius: 20px; }
+
+        /* Cart Item Card — pink accent */
+        .cart-item-card {
+            background: rgba(255,255,255,0.05); border-radius: 16px; padding: 1.2rem 1.5rem;
+            display: flex; align-items: center; gap: 1.2rem;
+            border: 1px solid rgba(244,114,182,0.15);
+            transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .cart-item-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: linear-gradient(180deg, #ec4899, #f9a8d4);
+            border-radius: 3px 0 0 3px; opacity: 0; transition: opacity 0.3s;
+        }
+        .cart-item-card:hover { background: rgba(236,72,153,0.08); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(236,72,153,0.25); border-color: rgba(244,114,182,0.35); }
+        .cart-item-card:hover::before { opacity: 1; }
+
+        .cart-item-img {
+            width: 85px; height: 85px; border-radius: 12px;
+            object-fit: cover; flex-shrink: 0;
+            border: 2px solid rgba(244,114,182,0.4);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .cart-item-details { flex: 1; }
+        .cart-item-details h4 { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.2rem; letter-spacing: 0.3px; }
+        .cart-item-details .item-price { font-size: 1.15rem; font-weight: 800; color: #f9a8d4; text-shadow: 0 0 12px rgba(244,114,182,0.4); }
+        .cart-item-details .item-unit { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+        .qty-controls { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; }
+        .qty-btn {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1.5px solid rgba(244,114,182,0.6);
+            background: rgba(236,72,153,0.1); color: #f9a8d4; font-size: 1rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .qty-btn:hover { background: #ec4899; color: #fff; box-shadow: 0 0 16px rgba(236,72,153,0.5); transform: scale(1.1); }
+        .qty-num { font-weight: 700; font-size: 1rem; color: #fff; min-width: 24px; text-align: center; }
+        .cart-item-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem; }
+        .item-total { font-size: 1.15rem; font-weight: 800; color: #fbcfe8; text-shadow: 0 0 10px rgba(244,114,182,0.4); }
+
+        .btn-remove {
+            background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; font-size: 0.8rem;
+            cursor: pointer; display: flex; align-items: center; gap: 0.3rem;
+            font-family: 'Georgia', serif; font-weight: 600; padding: 0.3rem 0.6rem;
+            border-radius: 6px; transition: background 0.2s;
+        }
+        .btn-remove:hover { background: rgba(239,68,68,0.3); }
+
+        .btn-save {
+            background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; font-size: 0.8rem;
+            cursor: pointer; display: flex; align-items: center; gap: 0.3rem;
+            font-family: 'Georgia', serif; font-weight: 600; padding: 0.3rem 0.6rem;
+            border-radius: 6px; transition: background 0.2s;
+        }
+        .btn-save:hover { background: rgba(251,191,36,0.3); }
+
+        .empty-cart-box {
+            background: rgba(255,255,255,0.04); border-radius: 16px; padding: 3.5rem 2rem;
+            text-align: center; border: 1px dashed rgba(255,255,255,0.15);
+        }
+        .empty-cart-box i { font-size: 4.5rem; color: rgba(251,191,36,0.2); margin-bottom: 1rem; display: block; }
+        .empty-cart-box h4 { font-size: 1.2rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+        .empty-cart-box a {
+            display: inline-block; margin-top: 1.2rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a1a1a; padding: 0.75rem 2rem; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            box-shadow: 0 4px 16px rgba(251,191,36,0.4); transition: transform 0.2s;
+        }
+        .empty-cart-box a:hover { transform: translateY(-2px); }
+
+        /* Saved for Later */
+        .saved-section { margin-top: 0.5rem; }
+        .saved-section h3 {
+            font-size: 1rem; font-weight: 700; color: #fbbf24;
+            margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .saved-section h3 i { color: #fbbf24; }
+
+        .saved-item-card {
+            background: rgba(255,255,255,0.07); border-radius: 14px; padding: 1rem 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+            border-left: 4px solid #fbbf24;
+            margin-bottom: 0.8rem;
+        }
+        .saved-item-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+        .saved-item-card .saved-details { flex: 1; }
+        .saved-item-card .saved-details h4 { font-size: 0.95rem; font-weight: 700; color: #fff; }
+        .saved-item-card .saved-details span { font-size: 0.9rem; color: #fbbf24; font-weight: 700; }
+        .btn-move-cart {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a1a1a; border: none; padding: 0.45rem 1rem;
+            border-radius: 8px; font-family: 'Georgia', serif;
+            font-size: 0.8rem; font-weight: 700; cursor: pointer;
+            transition: opacity 0.2s; white-space: nowrap;
+        }
+        .btn-move-cart:hover { opacity: 0.88; }
+
+        /* RIGHT SIDE — Order Summary: Deep Crimson Rose */
+        .summary-panel { display: flex; flex-direction: column; gap: 1.2rem; font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif; }
+        .summary-box {
+            background: linear-gradient(160deg, #1c0a0a 0%, #3b0a0a 40%, #7f1d1d 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 1.8rem;
+            border: 1px solid rgba(239,68,68,0.3);
+            border-top: 4px solid #ef4444;
+            position: sticky; top: 90px;
+            font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;
+            box-shadow: 0 8px 40px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .summary-box h3 {
+            font-family: 'Trebuchet MS', sans-serif; font-size: 1.3rem;
+            color: #fca5a5; margin-bottom: 1.2rem; letter-spacing: 0.5px;
+            text-shadow: 0 0 20px rgba(239,68,68,0.5);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; font-size: 0.9rem; color: rgba(255,255,255,0.55); border-bottom: 1px solid rgba(239,68,68,0.12); }
+        .summary-row:last-of-type { border-bottom: none; }
+        .summary-row.total {
+            font-size: 1.1rem; font-weight: 800; color: #fff; padding-top: 0.9rem;
+            border-top: 1px solid rgba(239,68,68,0.35); margin-top: 0.3rem;
+        }
+        .summary-row .val { font-weight: 700; color: #fca5a5; }
+        .summary-row.total .val { color: #f87171; font-size: 1.35rem; text-shadow: 0 0 16px rgba(239,68,68,0.6); }
+        .shipping-note {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(52,211,153,0.3); border-radius: 10px;
+            padding: 0.7rem 1rem; font-size: 0.78rem; color: #6ee7b7;
+            display: flex; align-items: center; gap: 0.5rem; margin: 0.8rem 0;
+        }
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #dc2626, #b91c1c, #dc2626);
+            background-size: 200% auto;
+            color: white; border: none; padding: 1.1rem; border-radius: 14px;
+            font-family: 'Trebuchet MS', sans-serif; font-size: 0.92rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 24px rgba(220,38,38,0.5);
+            margin-top: 0.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            letter-spacing: 0.8px; text-transform: uppercase;
+        }
+        .checkout-btn:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(220,38,38,0.65);
+        }
+        .continue-btn {
+            width: 100%; background: transparent; color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(239,68,68,0.25); padding: 0.75rem; border-radius: 14px;
+            font-family: 'Trebuchet MS', sans-serif; font-size: 0.88rem; font-weight: 600;
+            cursor: pointer; transition: all 0.25s; margin-top: 0.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            text-decoration: none; letter-spacing: 0.3px;
+        }
+        .continue-btn:hover { background: rgba(239,68,68,0.1); color: #fca5a5; border-color: rgba(239,68,68,0.5); }
+
+        /* Recommendations */
+        .rec-section { margin-top: 2rem; }
+        .rec-section h3 {
+            font-family: 'Georgia', serif; font-size: 1.4rem;
+            color: #fbbf24; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .rec-section h3 i { color: #f97316; }
+        .rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+
+        .rec-card {
+            background: rgba(255,255,255,0.05); border-radius: 14px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;
+        }
+        .rec-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.4); border-color: rgba(249,115,22,0.4); }
+        .rec-card img { width: 100%; height: 120px; object-fit: cover; }
+        .rec-card-body { padding: 0.8rem; }
+        .rec-card-body h4 { font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+        .rec-card-body .rec-price { font-size: 0.95rem; font-weight: 800; color: #fbbf24; margin-bottom: 0.5rem; }
+        .rec-add-btn {
+            width: 100%; background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white; border: none; padding: 0.45rem; border-radius: 8px;
+            font-family: 'Georgia', serif; font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .rec-add-btn:hover { opacity: 0.88; }
+
+        /* Payment Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); z-index: 1000;
+            align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: white; border-radius: 20px; width: 100%; max-width: 500px;
+            max-height: 90vh; overflow-y: auto; margin: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #1a0533, #6d28d9);
+            color: white; padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-radius: 20px 20px 0 0;
+        }
+        .modal-header h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+        .modal-header .modal-total { font-size: 1.1rem; color: #fbbf24; font-weight: 700; }
+        .modal-close {
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-body { padding: 1.5rem 2rem; }
+
+        /* Payment Steps */
+        .steps {
+            display: flex; justify-content: space-between;
+            margin-bottom: 1.5rem; position: relative;
+        }
+        .steps::before {
+            content: ''; position: absolute; top: 16px; left: 10%; right: 10%;
+            height: 2px; background: #e5e7eb; z-index: 0;
+        }
+        .step {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.3rem; z-index: 1;
+        }
+        .step-circle {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #e5e7eb; color: #9ca3af;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; transition: all 0.3s;
+        }
+        .step.active .step-circle { background: #6d28d9; color: white; }
+        .step.done .step-circle { background: #16a34a; color: white; }
+        .step span { font-size: 0.7rem; color: #9ca3af; font-weight: 600; }
+        .step.active span { color: #6d28d9; }
+        .step.done span { color: #16a34a; }
+
+        /* Step Panels */
+        .step-panel { display: none; }
+        .step-panel.active { display: block; }
+
+        /* Delivery Form */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+        .form-row.full { grid-template-columns: 1fr; }
+        .form-field label {
+            display: block; font-size: 0.75rem; font-weight: 600;
+            color: #6d28d9; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+        .form-field input, .form-field select, .form-field textarea {
+            width: 100%; padding: 0.7rem 0.9rem;
+            border: 2px solid #e5e7eb; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem;
+            outline: none; transition: border-color 0.25s;
+            box-sizing: border-box;
+        }
+        .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: #6d28d9; }
+
+        /* Payment Methods */
+        .pay-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.2rem; }
+        .pay-method {
+            border: 1.5px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 1rem;
+            cursor: pointer; text-align: center; transition: all 0.25s;
+            background: rgba(255,255,255,0.04);
+        }
+        .pay-method:hover { border-color: #10b981; background: rgba(16,185,129,0.1); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(16,185,129,0.2); }
+        .pay-method.selected { border-color: #10b981; background: rgba(16,185,129,0.12); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+        .pay-method i { font-size: 1.8rem; margin-bottom: 0.4rem; display: block; }
+        .pay-method span { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.85); font-family: 'Trebuchet MS', sans-serif; }
+        .pay-method.upi i { color: #6d28d9; }
+        .pay-method.card i { color: #1d4ed8; }
+        .pay-method.cod i { color: #16a34a; }
+        .pay-method.netbank i { color: #f97316; }
+
+        /* UPI Input */
+        .pay-detail-box { margin-top: 1rem; }
+        .upi-input { display: flex; gap: 0.5rem; }
+        .upi-input input { flex: 1; }
+        .verify-btn {
+            background: #6d28d9; color: white; border: none;
+            padding: 0.7rem 1rem; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-weight: 600;
+            font-size: 0.85rem; cursor: pointer; white-space: nowrap;
+        }
+        /* Card inputs */
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+        /* Order Review */
+        .review-items { max-height: 180px; overflow-y: auto; margin-bottom: 1rem; }
+        .review-item {
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.6rem 0; border-bottom: 1px solid #f3f4f6;
+        }
+        .review-item img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+        .review-item .ri-name { flex: 1; font-size: 0.85rem; font-weight: 600; color: #1a0533; }
+        .review-item .ri-qty { font-size: 0.78rem; color: #9ca3af; }
+        .review-item .ri-price { font-size: 0.9rem; font-weight: 700; color: #6d28d9; }
+        .review-summary {
+            background: #f5f3ff; border-radius: 10px; padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .review-summary .rs-row {
+            display: flex; justify-content: space-between;
+            font-size: 0.85rem; color: #6b7280; padding: 0.25rem 0;
+        }
+        .review-summary .rs-row.total {
+            font-size: 1rem; font-weight: 800; color: #1a0533;
+            border-top: 1px solid #ddd6fe; padding-top: 0.5rem; margin-top: 0.3rem;
+        }
+        .review-summary .rs-row.total span:last-child { color: #6d28d9; }
+
+        /* Modal Buttons */
+        .modal-btn-row { display: flex; gap: 0.8rem; margin-top: 1rem; }
+        .btn-next {
+            flex: 1; background: linear-gradient(135deg, #6d28d9, #3b0764);
+            color: white; border: none; padding: 0.9rem;
+            border-radius: 10px; font-family: 'Poppins', sans-serif;
+            font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-next:hover { opacity: 0.88; }
+        .btn-back {
+            background: white; color: #6d28d9; border: 2px solid #6d28d9;
+            padding: 0.9rem 1.2rem; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-weight: 600;
+            font-size: 0.95rem; cursor: pointer;
+        }
+
+        /* Success Screen */
+        .success-screen { text-align: center; padding: 2rem 1rem; }
+        .success-screen .tick {
+            width: 80px; height: 80px; background: #dcfce7;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin: 0 auto 1rem;
+            animation: pop 0.4s ease;
+        }
+        @keyframes pop {
+            0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); }
+        }
+        .success-screen .tick i { font-size: 2.5rem; color: #16a34a; }
+        .success-screen h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: #1a0533; margin-bottom: 0.5rem; }
+        .success-screen p { color: #6b7280; font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .order-id { background: #f5f3ff; border-radius: 8px; padding: 0.6rem 1rem; font-weight: 700; color: #6d28d9; font-size: 0.95rem; margin: 1rem 0; }
+        .btn-done {
+            background: linear-gradient(135deg, #6d28d9, #3b0764);
+            color: white; border: none; padding: 0.9rem 2rem;
+            border-radius: 10px; font-family: 'Poppins', sans-serif;
+            font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 0.5rem;
+        }
+
+        /* Summary pulse animation */
+        .val.updated {
+            animation: pulse-val 0.4s ease;
+        }
+        @keyframes pulse-val {
+            0% { transform: scale(1); color: #6d28d9; }
+            50% { transform: scale(1.15); color: #f97316; }
+            100% { transform: scale(1); color: #6d28d9; }
+        }
+
+        /* Delivery Section */
+        .delivery-section {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-top: 4px solid #ef4444;
+        }
+        .delivery-header {
+            background: linear-gradient(135deg, #7f1d1d, #ef4444);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: white;
+        }
+        .delivery-header i { font-size: 1.3rem; color: #fca5a5; }
+        .delivery-header h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+        .delivery-body { padding: 1.5rem; }
+        .delivery-note {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            font-size: 0.78rem;
+            color: #9a3412;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        footer {
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.4); text-align: center;
+            padding: 1.5rem; margin-top: 3rem; font-size: 0.88rem;
+        }
+
+        @media (max-width: 1100px) {
+            .cart-wrapper { grid-template-columns: 1fr 380px; padding: 0 1.5rem; }
+        }
+        @media (max-width: 768px) {
+            .cart-wrapper { grid-template-columns: 1fr; padding: 0 1rem; }
+            .summary-box { position: static; }
+            .cart-item-card { flex-wrap: wrap; }
+            .nav-links { gap: 1rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo"><img src="images/logo.svg" alt="ComicTradersHub" style="height:52px;width:auto;"></div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="cart.html" class="cart-nav-btn"><i class="fas fa-shopping-cart"></i> Cart <span id="cartBadge" style="background:#ef4444;color:white;border-radius:50%;padding:0 5px;font-size:0.75rem;"></span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="cart-hero">
+        <div class="cart-hero-inner">
+            <h2><i class="fas fa-shopping-cart" style="color:#fbbf24;margin-right:0.6rem;"></i> Your <span>Shopping Cart</span></h2>
+            <p><i class="fas fa-circle" style="font-size:0.4rem;vertical-align:middle;margin-right:0.4rem;color:#4ade80;"></i> <span style="color:#4ade80;font-weight:600;letter-spacing:1px;text-transform:uppercase;font-size:0.78rem;">Review your items and proceed to checkout</span> <i class="fas fa-circle" style="font-size:0.4rem;vertical-align:middle;margin-left:0.4rem;color:#4ade80;"></i></p>
+            <div class="cart-hero-badges">
+                <span><i class="fas fa-shield-alt"></i> Secure Checkout</span>
+                <span><i class="fas fa-truck"></i> Free Delivery in Pulwama</span>
+                <span><i class="fas fa-undo"></i> Easy Returns</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-wrapper">
+
+        <!-- Left: Cart Items -->
+        <div class="cart-panel">
+            <div class="cart-panel-header">
+                <h3><i class="fas fa-box-open" style="color:#6d28d9;margin-right:0.5rem;"></i> Cart Items</h3>
+                <span id="itemCountLabel">0 items</span>
+            </div>
+
+            <div id="cartItemsList"></div>
+
+            <!-- Saved for Later -->
+            <div class="saved-section" id="savedSection" style="display:none;">
+                <h3><i class="fas fa-bookmark"></i> Saved for Later</h3>
+                <div id="savedItemsList"></div>
+            </div>
+
+            <!-- Delivery Details Section -->
+            <div class="delivery-section" id="deliverySection" style="display:none;">
+                <div class="delivery-header">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Delivery Details</h3>
+                </div>
+                <div class="delivery-body">
+                    <div class="form-row">
+                        <div class="form-field"><label>Full Name</label><input type="text" id="delName" placeholder="Your full name"></div>
+                        <div class="form-field"><label>Phone</label><input type="tel" id="delPhone" placeholder="10-digit number"></div>
+                    </div>
+                    <div class="form-row full">
+                        <div class="form-field"><label>Address</label><input type="text" id="delAddress" placeholder="House No, Street, Area"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field"><label>District</label>
+                            <select id="delDistrict" onchange="onDistrictChange()">
+                                <option value="">-- Select District --</option>
+                                <optgroup label="Kashmir Division">
+                                    <option>Srinagar</option>
+                                    <option>Budgam</option>
+                                    <option>Pulwama</option>
+                                    <option>Shopian</option>
+                                    <option>Anantnag</option>
+                                    <option>Kulgam</option>
+                                    <option>Baramulla</option>
+                                    <option>Bandipora</option>
+                                    <option>Kupwara</option>
+                                    <option>Ganderbal</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-field"><label>Pincode</label><input type="text" id="delPin" placeholder="6-digit pincode" maxlength="6"></div>
+                    </div>
+                    <div class="form-row full">
+                        <div class="form-field"><label>State</label>
+                            <select id="delState"><option value="JK">Jammu &amp; Kashmir</option></select>
+                        </div>
+                    </div>
+                    <div class="delivery-note">
+                        <i class="fas fa-info-circle"></i>
+                        Free delivery within Pulwama district only. Rs.99 shipping charge applies to all other districts.
+                    </div>
+                    <button onclick="confirmAddress()" id="addressConfirmBtn" style="display:none;width:100%;margin-top:1rem;background:linear-gradient(135deg,#6d28d9,#3b0764);color:white;border:none;padding:0.9rem;border-radius:12px;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(109,40,217,0.4);">
+                        <i class="fas fa-arrow-right"></i> Confirm Address &amp; View Order Summary
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="rec-section">
+                <h3><i class="fas fa-fire"></i> You May Also Like</h3>
+                <div class="rec-grid" id="recGrid"></div>
+            </div>
+        </div>
+
+        <!-- Right: Order Summary -->
+        <div class="summary-panel">
+            <div class="summary-box" id="summaryBox">
+                <h3>Order Summary</h3>
+
+                <!-- Real-time item breakdown -->
+                <div id="summaryItemBreakdown" style="margin-bottom:1rem;"></div>
+
+                <div class="summary-row"><span>Subtotal</span><span class="val" id="summarySubtotal">â‚¹0</span></div>
+                <div class="summary-row"><span>Shipping</span><span class="val" id="summaryShipping">â‚¹0</span></div>
+                <div class="summary-row"><span>GST (5%)</span><span class="val" id="summaryTax">â‚¹0</span></div>
+                <div class="summary-row total"><span>Total</span><span class="val" id="summaryTotal">â‚¹0</span></div>
+
+                <div class="shipping-note">
+                    <i class="fas fa-truck"></i> <span id="shippingMsg">Add items to see shipping info</span>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div id="paymentSection" style="display:none;">
+                    <div style="font-size:0.82rem;font-weight:700;color:#1a0533;margin:1rem 0 0.6rem;text-transform:uppercase;letter-spacing:1px;"><i class="fas fa-credit-card" style="color:#6d28d9;margin-right:0.4rem;"></i>Select Payment Method</div>
+                    <div class="pay-methods">
+                        <div class="pay-method upi" onclick="selectPayment('upi',this)">
+                            <i class="fas fa-mobile-alt"></i><span>UPI</span>
+                        </div>
+                        <div class="pay-method card" onclick="selectPayment('card',this)">
+                            <i class="fas fa-credit-card"></i><span>Card</span>
+                        </div>
+                        <div class="pay-method cod" onclick="selectPayment('cod',this)">
+                            <i class="fas fa-money-bill-wave"></i><span>Cash on Delivery</span>
+                        </div>
+                        <div class="pay-method netbank" onclick="selectPayment('netbank',this)">
+                            <i class="fas fa-university"></i><span>Net Banking</span>
+                        </div>
+                    </div>
+
+                    <!-- UPI -->
+                    <div id="upiBox" class="pay-detail-box" style="display:none;">
+                        <div class="form-field">
+                            <label>UPI ID</label>
+                            <div class="upi-input">
+                                <input type="text" id="upiId" placeholder="yourname@upi">
+                                <button class="verify-btn" onclick="verifyUPI()">Verify</button>
+                            </div>
+                            <div id="upiStatus" style="font-size:0.78rem;margin-top:0.4rem;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card -->
+                    <div id="cardBox" class="pay-detail-box" style="display:none;">
+                        <div class="form-field" style="margin-bottom:0.7rem;">
+                            <label>Card Number</label>
+                            <input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+                        </div>
+                        <div class="card-grid">
+                            <div class="form-field">
+                                <label>Expiry</label>
+                                <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)">
+                            </div>
+                            <div class="form-field">
+                                <label>CVV</label>
+                                <input type="password" id="cardCvv" placeholder="â€¢â€¢â€¢" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-field" style="margin-top:0.7rem;">
+                            <label>Name on Card</label>
+                            <input type="text" id="cardName" placeholder="Full Name">
+                        </div>
+                    </div>
+
+                    <!-- Net Banking -->
+                    <div id="netbankBox" class="pay-detail-box" style="display:none;">
+                        <div class="form-field">
+                            <label>Select Bank</label>
+                            <select id="bankSelect">
+                                <option value="">-- Choose Bank --</option>
+                                <option>State Bank of India</option>
+                                <option>HDFC Bank</option>
+                                <option>ICICI Bank</option>
+                                <option>Axis Bank</option>
+                                <option>Punjab National Bank</option>
+                                <option>Bank of Baroda</option>
+                                <option>J&K Bank</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- COD Note -->
+                    <div id="codBox" class="pay-detail-box" style="display:none;">
+                        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:0.8rem;font-size:0.82rem;color:#166534;">
+                            <i class="fas fa-check-circle" style="margin-right:0.4rem;"></i>
+                            Pay in cash when your order is delivered. Available within district only.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" id="checkoutBtn" onclick="handleCheckout()" style="display:none;">
+                    <i class="fas fa-lock"></i> <span id="checkoutBtnText">Proceed to Pay</span>
+                </button>
+                <a href="products.html" class="continue-btn"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-body">
+                <div class="success-screen">
+                    <div class="tick"><i class="fas fa-check"></i></div>
+                    <h3>Order Placed!</h3>
+                    <p>Thank you for shopping with ComicTradersHub</p>
+                    <p style="font-size:0.82rem;">We will contact you shortly to confirm delivery.</p>
+                    <div class="order-id" id="orderIdDisplay"></div>
+                    <p style="font-size:0.78rem;color:#9ca3af;">Estimated delivery: 2-5 business days</p>
+                    <button class="btn-done" onclick="closeSucess()"><i class="fas fa-home"></i> Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="cart-payment.js"></script>
+</body>
+</html>
+
+
+
+
+

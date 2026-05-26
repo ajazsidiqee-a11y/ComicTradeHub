@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - ComicTradersHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        header { background: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9); border-bottom: 2px solid #7c3aed; position: sticky; top: 0; z-index: 100; padding: 1rem 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .brand-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: #fbbf24; letter-spacing: 1px; white-space: nowrap; }
+        .nav-links { display: flex; list-style: none; gap: 0.3rem; flex: 1; justify-content: center; margin: 0 2rem; align-items: center; }
+        .nav-links li { flex: none; }
+        .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.15rem; border-radius: 25px; letter-spacing: 0.3px; white-space: nowrap; transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.25s; }
+        .nav-links a i { font-size: 0.82rem; opacity: 0.8; transition: opacity 0.2s; }
+        .nav-links a:hover { color: #fbbf24; background: rgba(251,191,36,0.13); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(251,191,36,0.18); }
+        .nav-links a:hover i { opacity: 1; }
+        .cart-nav-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b) !important; color: #1a1a1a !important; padding: 0.5rem 1.3rem !important; border-radius: 25px; font-weight: 700; box-shadow: 0 3px 12px rgba(251,191,36,0.4); }
+        .cart-nav-btn:hover { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #1a1a1a !important; box-shadow: 0 6px 20px rgba(251,191,36,0.55) !important; transform: translateY(-3px) !important; }
+
+        /* Page Hero */
+        .page-hero {
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: white; text-align: center; padding: 4rem 2rem 3rem;
+            position: relative; overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 50%);
+            animation: heroPulse 12s infinite alternate; pointer-events: none;
+        }
+        @keyframes heroPulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        .page-hero h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; position: relative; z-index: 1;}
+        .page-hero p  { color: rgba(255,255,255,0.7); font-size: 1.1rem; position: relative; z-index: 1;}
+        .page-hero h2 span { color: #fbbf24; }
+
+        /* Content Enhancements */
+        .about-section { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
+        .about-content{
+            text-align: justify;
+            text-justify: inter-word;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .text-card {
+            background: white; padding: 2rem; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 2rem;
+            border-left: 5px solid #6d28d9; transition: transform 0.3s ease;
+        }
+        .text-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(109, 40, 217, 0.1); }
+        .text-card h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #1a0533; margin-bottom: 1rem; }
+        .text-card p { font-size: 1rem; color: #475569; line-height: 1.8; margin-bottom: 0; }
+        footer { background: linear-gradient(135deg, #0f0c29, #302b63); color: rgba(255,255,255,0.5); text-align: center; padding: 1.5rem; margin-top: 2rem; font-size: 0.9rem; }
+        @media (max-width: 900px) { .about-content { grid-template-columns: 1fr; gap: 2rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="images/logo.svg" alt="ComicTradersHub" style="height:52px;width:auto;">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="cart.html" class="cart-nav-btn"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-hero">
+            <h2>About <span>ComicTradersHub</span></h2>
+            <p>Delivering the finest quality dry fruits directly to your doorstep</p>
+        </div>
+        
+        <section class="about-section">
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="text-card" style="border-left-color: #f97316;">
+                        <h3>Our Story</h3>
+                        <p>ComicTradersHub was born in 2024 with a simple yet powerful vision — to bring the finest quality dry fruits and nuts directly to your doorstep at honest prices. What started as a small family-driven initiative in the heart of Kashmir has grown into a trusted online marketplace. We source our products directly from local farmers and certified suppliers, ensuring every almond, walnut, raisin and seed that reaches you is fresh, pure and packed with nutrition.</p>
+                    </div>
+                    
+                    <div class="text-card" style="border-left-color: #3b82f6;">
+                        <h3>Our Mission</h3>
+                        <p>Our mission is to make healthy eating accessible, affordable and enjoyable for every family in India. We believe that premium quality dry fruits should not be a luxury — they should be a daily part of every household. By cutting out middlemen and working directly with growers, we ensure you get the best products at the fairest prices. We are committed to transparency, hygiene, and delivering an experience that keeps you coming back.</p>
+                    </div>
+                    
+                    <div class="text-card" style="border-left-color: #6d28d9;">
+                        <h3>Why Choose Us?</h3>
+                        <ul style="color: #475569; font-size: 1rem; line-height: 2; list-style: none; padding: 0;">
+                            <li><i class="fas fa-check-circle" style="color:#10b981; margin-right:0.5rem;"></i> 100% natural & farm-fresh dry fruits and nuts</li>
+                            <li><i class="fas fa-check-circle" style="color:#10b981; margin-right:0.5rem;"></i> Directly sourced from Kashmir & trusted growers</li>
+                            <li><i class="fas fa-check-circle" style="color:#10b981; margin-right:0.5rem;"></i> Free delivery within the district</li>
+                            <li><i class="fas fa-check-circle" style="color:#10b981; margin-right:0.5rem;"></i> Secure & easy online payment</li>
+                            <li><i class="fas fa-check-circle" style="color:#10b981; margin-right:0.5rem;"></i> 24/7 customer support always ready to help</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="about-image">
+                    <div style="display:flex;flex-direction:column;gap:0.8rem;">
+                        <div style="position:relative;border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.2);">
+                            <img src="images/Almond.webp" alt="Almonds"
+                                style="width:100%;height:220px;object-fit:cover;display:block;border-radius:20px;">
+                            <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.65));padding:1rem 1.2rem;border-radius:0 0 20px 20px;">
+                                <p style="color:#fbbf24;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin:0;">🌰 Premium Nuts & Dry Mixtures</p>
+                                <p style="color:rgba(255,255,255,0.75);font-size:0.75rem;margin:0.2rem 0 0;">Farm fresh from Kashmir's valleys</p>
+                            </div>
+                        </div>
+                        <img src="images/Wulnuts.webp" alt="Walnuts"
+                            style="width:100%;height:200px;object-fit:cover;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+                        <img src="images/Cashews.webp" alt="Cashews"
+                            style="width:100%;height:200px;object-fit:cover;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+                        <img src="images/Dried Appricot.webp" alt="Dried Apricots"
+                            style="width:100%;height:200px;object-fit:cover;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 ComicTradersHub. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

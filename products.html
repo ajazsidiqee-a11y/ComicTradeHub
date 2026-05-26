@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - ComicTradersHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f4f6fb; }
+
+        /* Navbar */
+        header { background: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9); border-bottom: 2px solid #7c3aed; position: sticky; top: 0; z-index: 100; padding: 1rem 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .logo-icon { font-size: 1.4rem; color: #fbbf24; }
+        .logo h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: #fbbf24; letter-spacing: 1px; white-space: nowrap; }
+        .brand-name { font-family: 'Playfair Display', serif; font-weight: 800; letter-spacing: 1px; color: #fbbf24; }
+        .nav-links { display: flex; list-style: none; gap: 0.3rem; flex: 1; justify-content: center; margin: 0 2rem; align-items: center; }
+        .nav-links li { flex: none; }
+        .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.15rem; border-radius: 25px; letter-spacing: 0.3px; white-space: nowrap; transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.25s; }
+        .nav-links a i { font-size: 0.82rem; opacity: 0.8; transition: opacity 0.2s; }
+        .nav-links a:hover { color: #fbbf24; background: rgba(251,191,36,0.13); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(251,191,36,0.18); }
+        .nav-links a:hover i { opacity: 1; }
+        .cart-nav-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b) !important; color: #1a1a1a !important; padding: 0.5rem 1.3rem !important; border-radius: 25px; font-weight: 700; box-shadow: 0 3px 12px rgba(251,191,36,0.4); }
+        .cart-nav-btn:hover { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #1a1a1a !important; box-shadow: 0 6px 20px rgba(251,191,36,0.55) !important; transform: translateY(-3px) !important; }
+
+        /* Page Hero */
+        .page-hero {
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(109,40,217,0.15) 0%, transparent 50%);
+            animation: heroPulse 12s infinite alternate; pointer-events: none;
+        }
+        @keyframes heroPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .page-hero h2 { font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .page-hero p  { color: rgba(255,255,255,0.6); font-size: 1rem; }
+        .page-hero h2 span { color: #e74c3c; }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .filters select {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .filters select:focus { border-color: #667eea; }
+
+        /* Products Grid */
+        .products-section { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+
+        /* Section Heading */
+        .products-section > h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 0.4rem;
+            background: linear-gradient(135deg, #6d28d9, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .products-section > p {
+            text-align: center;
+            font-style: italic;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Base Product Card */
+        .product-card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.35s, box-shadow 0.35s;
+            position: relative;
+            border: none;
+            padding: 0;
+            text-align: left;
+            background: white;
+        }
+        .product-card:hover { transform: translateY(-10px); }
+
+        /* Icon Banner */
+        .product-icon-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 175px;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-icon-banner img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s;
+        }
+        .product-card:hover .product-icon-banner img {
+            transform: scale(1.08);
+        }
+        .product-icon-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0; right: 0;
+            height: 28px;
+            background: white;
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+            z-index: 1;
+        }
+        .cat-tag { z-index: 2; }
+        .wishlist-btn { z-index: 2; }
+        .product-card:hover .product-icon-banner svg {
+            transform: scale(1.12) rotate(-4deg);
+            transition: transform 0.35s;
+        }
+        .product-icon-banner svg { transition: transform 0.35s; }
+
+        /* Category Tag */
+        .cat-tag {
+            position: absolute;
+            top: 12px; left: 12px;
+            padding: 0.25rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Wishlist btn */
+        .wishlist-btn {
+            position: absolute;
+            top: 12px; right: 12px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: #ccc;
+            font-size: 1rem;
+            transition: color 0.3s, transform 0.2s;
+            z-index: 2;
+        }
+        .wishlist-btn:hover { color: #e74c3c; transform: scale(1.2); }
+        .wishlist-btn.active { color: #e74c3c; }
+
+        /* Product Info */
+        .product-info { padding: 0.5rem 1.4rem 1.5rem; }
+
+        .product-info h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            margin-top: 0.2rem;
+        }
+
+        .product-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .stars { font-size: 0.82rem; }
+        .review-count { font-size: 0.73rem; color: #999; }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+        .old-price { font-size: 0.85rem; color: #bbb; text-decoration: line-through; }
+
+        /* ── Per-card unique styles ── */
+
+        /* Almonds - warm amber */
+        .product-card[data-category="nuts"]:nth-of-type(1) {
+            box-shadow: 0 6px 28px rgba(217,119,6,0.2);
+            border-top: 4px solid #f59e0b;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(1) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #92400e;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(1) .price {
+            font-size: 1.3rem; font-weight: 800; color: #d97706;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(1) .add-to-cart {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(1):hover { box-shadow: 0 18px 40px rgba(217,119,6,0.3); }
+
+        /* Peanuts - sunny yellow */
+        .product-card[data-category="nuts"]:nth-of-type(2) {
+            box-shadow: 0 6px 28px rgba(234,179,8,0.2);
+            border-top: 4px solid #eab308;
+            background: linear-gradient(180deg, #fefce8 0%, #fff 40%);
+        }
+        .product-card[data-category="nuts"]:nth-of-type(2) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800; color: #713f12;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.95rem;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(2) .price {
+            font-size: 1.3rem; font-weight: 800; color: #ca8a04;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(2) .add-to-cart {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            border-radius: 25px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(2):hover { box-shadow: 0 18px 40px rgba(234,179,8,0.3); }
+
+        /* Walnuts - rich brown */
+        .product-card[data-category="nuts"]:nth-of-type(3) {
+            box-shadow: 0 6px 28px rgba(120,53,15,0.2);
+            background: linear-gradient(180deg, #fef3c7 0%, #fff 40%);
+            border-left: 5px solid #b45309;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(3) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic; color: #78350f; font-size: 1.15rem;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(3) .price {
+            font-size: 1.3rem; font-weight: 800; color: #b45309;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(3) .add-to-cart {
+            background: linear-gradient(135deg, #92400e, #b45309);
+            border-radius: 8px; color: #fef3c7; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(3):hover { box-shadow: 0 18px 40px rgba(120,53,15,0.3); }
+
+        /* Cashews - cream gold */
+        .product-card[data-category="nuts"]:nth-of-type(4) {
+            box-shadow: 0 6px 28px rgba(161,98,7,0.2);
+            border: 2px solid #fde68a;
+            background: linear-gradient(160deg, #fffbeb, #fff);
+        }
+        .product-card[data-category="nuts"]:nth-of-type(4) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700; color: #78350f;
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(4) .price {
+            font-size: 1.3rem; font-weight: 800; color: #d97706;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(4) .add-to-cart {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 12px; color: #78350f; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 800;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(4):hover { box-shadow: 0 18px 40px rgba(161,98,7,0.3); }
+
+        /* Brazil Nuts - dark chocolate */
+        .product-card[data-category="nuts"]:nth-of-type(5) {
+            box-shadow: 0 6px 28px rgba(87,29,0,0.2);
+            background: linear-gradient(160deg, #1c0a00, #3b1a08);
+            border-top: 4px solid #d97706;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(5) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #fde68a; font-size: 1.1rem;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(5) .stars { color: #fbbf24; }
+        .product-card[data-category="nuts"]:nth-of-type(5) .review-count { color: #a16207; }
+        .product-card[data-category="nuts"]:nth-of-type(5) .price {
+            font-size: 1.3rem; font-weight: 800; color: #fbbf24;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(5) .old-price { color: #78350f; }
+        .product-card[data-category="nuts"]:nth-of-type(5) .add-to-cart {
+            background: linear-gradient(135deg, #d97706, #fbbf24);
+            border-radius: 10px; color: #1c0a00; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 800;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(5):hover { box-shadow: 0 18px 40px rgba(87,29,0,0.4); }
+
+        /* Pistachios - fresh pistachio green */
+        .product-card[data-category="nuts"]:nth-of-type(6) {
+            box-shadow: 0 6px 28px rgba(74,222,128,0.2);
+            border: 2px solid #86efac;
+            background: linear-gradient(160deg, #f0fdf4, #fff);
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #14532d; font-size: 1.1rem;
+            background: linear-gradient(90deg, #16a34a, #4ade80);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6) .price {
+            font-size: 1.3rem; font-weight: 800; color: #16a34a;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6) .add-to-cart {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6):hover { box-shadow: 0 18px 40px rgba(34,197,94,0.3); }
+
+        /* Pistachios - fresh pistachio green */
+        .product-card[data-category="nuts"]:nth-of-type(6) {
+            box-shadow: 0 6px 28px rgba(74,222,128,0.2);
+            border: 2px solid #86efac;
+            background: linear-gradient(160deg, #f0fdf4, #fff);
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #14532d; font-size: 1.1rem;
+            background: linear-gradient(90deg, #16a34a, #4ade80);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6) .price {
+            font-size: 1.3rem; font-weight: 800; color: #16a34a;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6) .add-to-cart {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="nuts"]:nth-of-type(6):hover { box-shadow: 0 18px 40px rgba(34,197,94,0.3); }
+
+        /* Dried Apricots - vibrant orange */
+        .product-card[data-category="fruits"]:nth-of-type(7) {
+            box-shadow: 0 6px 28px rgba(249,115,22,0.2);
+            border-top: 4px solid #f97316;
+            background: linear-gradient(160deg, #fff7ed, #fff);
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800; color: #c2410c;
+            text-transform: uppercase; font-size: 0.92rem; letter-spacing: 0.5px;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7) .price {
+            font-size: 1.3rem; font-weight: 800; color: #ea580c;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7) .add-to-cart {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7):hover { box-shadow: 0 18px 40px rgba(249,115,22,0.3); }
+
+        /* Raisins - deep purple */
+        .product-card[data-category="fruits"]:nth-of-type(8) {
+            box-shadow: 0 6px 28px rgba(109,40,217,0.2);
+            border-left: 5px solid #7c3aed;
+            background: linear-gradient(160deg, #f5f3ff, #fff);
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic; color: #4c1d95; font-size: 1.15rem;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7) .price {
+            font-size: 1.3rem; font-weight: 800; color: #7c3aed;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7) .add-to-cart {
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 25px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(7):hover { box-shadow: 0 18px 40px rgba(109,40,217,0.3); }
+
+        /* Anjeer - warm fig purple */
+        .product-card[data-category="fruits"]:nth-of-type(9) {
+            box-shadow: 0 6px 28px rgba(124,58,237,0.2);
+            border-top: 4px solid #a855f7;
+            background: linear-gradient(160deg, #faf5ff, #fff);
+        }
+        .product-card[data-category="fruits"]:nth-of-type(8) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 800; color: #6b21a8;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(8) .price {
+            font-size: 1.3rem; font-weight: 800; color: #9333ea;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(8) .add-to-cart {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(8):hover { box-shadow: 0 18px 40px rgba(124,58,237,0.3); }
+
+        /* Cranberries - vivid red */
+        .product-card[data-category="fruits"]:nth-of-type(10) {
+            box-shadow: 0 6px 28px rgba(220,38,38,0.2);
+            border-top: 4px solid #ef4444;
+            background: linear-gradient(160deg, #fff1f2, #fff);
+        }
+        .product-card[data-category="fruits"]:nth-of-type(9) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800; color: #991b1b;
+            text-transform: uppercase; font-size: 0.92rem; letter-spacing: 0.5px;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(9) .price {
+            font-size: 1.3rem; font-weight: 800; color: #dc2626;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(9) .add-to-cart {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(9):hover { box-shadow: 0 18px 40px rgba(220,38,38,0.3); }
+
+        /* Figs - earthy green */
+        .product-card[data-category="fruits"]:nth-of-type(11) {
+            box-shadow: 0 6px 28px rgba(101,163,13,0.2);
+            border-left: 5px solid #84cc16;
+            background: linear-gradient(160deg, #f7fee7, #fff);
+        }
+        .product-card[data-category="fruits"]:nth-of-type(10) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic; color: #3f6212; font-size: 1.15rem;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(10) .price {
+            font-size: 1.3rem; font-weight: 800; color: #65a30d;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(10) .add-to-cart {
+            background: linear-gradient(135deg, #84cc16, #65a30d);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(10):hover { box-shadow: 0 18px 40px rgba(101,163,13,0.3); }
+
+        /* Dates - golden caramel */
+        .product-card[data-category="fruits"]:nth-of-type(12) {
+            box-shadow: 0 6px 28px rgba(180,83,9,0.2);
+            border: 2px solid #fcd34d;
+            background: linear-gradient(160deg, #fffbeb, #fff);
+        }
+        .product-card[data-category="fruits"]:nth-of-type(11) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700; color: #92400e;
+            background: linear-gradient(90deg, #b45309, #d97706);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(11) .price {
+            font-size: 1.3rem; font-weight: 800; color: #b45309;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(11) .add-to-cart {
+            background: linear-gradient(135deg, #f59e0b, #b45309);
+            border-radius: 12px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="fruits"]:nth-of-type(11):hover { box-shadow: 0 18px 40px rgba(180,83,9,0.3); }
+
+        /* Chia Seeds - dark slate */
+        .product-card[data-category="seeds"]:nth-of-type(12) {
+            box-shadow: 0 6px 28px rgba(15,23,42,0.2);
+            background: linear-gradient(160deg, #0f172a, #1e293b);
+            border-top: 4px solid #38bdf8;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(12) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800; color: #e0f2fe;
+            text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(12) .stars { color: #38bdf8; }
+        .product-card[data-category="seeds"]:nth-of-type(12) .review-count { color: #64748b; }
+        .product-card[data-category="seeds"]:nth-of-type(12) .price {
+            font-size: 1.3rem; font-weight: 800; color: #38bdf8;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(12) .old-price { color: #475569; }
+        .product-card[data-category="seeds"]:nth-of-type(12) .add-to-cart {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            border-radius: 10px; color: #0f172a; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 800;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(12):hover { box-shadow: 0 18px 40px rgba(56,189,248,0.25); }
+
+        /* Pumpkin Seeds - fresh green */
+        .product-card[data-category="seeds"]:nth-of-type(13) {
+            box-shadow: 0 6px 28px rgba(22,163,74,0.2);
+            border: 2px solid #86efac;
+            background: linear-gradient(160deg, #f0fdf4, #fff);
+        }
+        .product-card[data-category="seeds"]:nth-of-type(13) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #14532d; font-size: 1.1rem;
+            background: linear-gradient(90deg, #16a34a, #65a30d);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(13) .price {
+            font-size: 1.3rem; font-weight: 800; color: #16a34a;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(13) .add-to-cart {
+            background: linear-gradient(135deg, #16a34a, #65a30d);
+            border-radius: 12px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(13):hover { box-shadow: 0 18px 40px rgba(22,163,74,0.3); }
+
+        /* Flax Seeds - warm linen */
+        .product-card[data-category="seeds"]:nth-of-type(15) {
+            box-shadow: 0 6px 28px rgba(180,83,9,0.15);
+            border-top: 4px solid #d97706;
+            background: linear-gradient(160deg, #fffbeb, #fff);
+        }
+        .product-card[data-category="seeds"]:nth-of-type(15) .product-info h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800; color: #92400e;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.92rem;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(15) .price {
+            font-size: 1.3rem; font-weight: 800; color: #b45309;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(15) .add-to-cart {
+            background: linear-gradient(135deg, #f59e0b, #b45309);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(15):hover { box-shadow: 0 18px 40px rgba(180,83,9,0.25); }
+
+        /* Sunflower Seeds - sunny yellow */
+        .product-card[data-category="seeds"]:nth-of-type(16) {
+            box-shadow: 0 6px 28px rgba(234,179,8,0.2);
+            border-top: 4px solid #eab308;
+            background: linear-gradient(160deg, #fefce8, #fff);
+        }
+        .product-card[data-category="seeds"]:nth-of-type(16) .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #713f12; font-size: 1.1rem;
+            background: linear-gradient(90deg, #ca8a04, #eab308);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(16) .price {
+            font-size: 1.3rem; font-weight: 800; color: #ca8a04;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(16) .add-to-cart {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="seeds"]:nth-of-type(16):hover { box-shadow: 0 18px 40px rgba(234,179,8,0.3); }
+
+        /* Mixed Packs - hot pink */
+        .product-card[data-category="mixed"] {
+            box-shadow: 0 6px 28px rgba(190,24,93,0.2);
+            background: linear-gradient(160deg, #fdf2f8, #fff);
+            border-top: 4px solid #ec4899;
+        }
+        .product-card[data-category="mixed"] .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #9d174d; font-size: 1.05rem;
+        }
+        .product-card[data-category="mixed"] .price {
+            font-size: 1.3rem; font-weight: 800; color: #be185d;
+        }
+        .product-card[data-category="mixed"] .add-to-cart {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="mixed"]:hover { box-shadow: 0 18px 40px rgba(190,24,93,0.3); }
+
+        /* Combo Packs - teal */
+        .product-card[data-category="combo"] {
+            box-shadow: 0 6px 28px rgba(13,148,136,0.2);
+            background: linear-gradient(160deg, #f0fdfa, #fff);
+            border-top: 4px solid #14b8a6;
+        }
+        .product-card[data-category="combo"] .product-info h4 {
+            font-family: 'Playfair Display', serif;
+            color: #0f766e; font-size: 1.05rem;
+        }
+        .product-card[data-category="combo"] .price {
+            font-size: 1.3rem; font-weight: 800; color: #0d9488;
+        }
+        .product-card[data-category="combo"] .add-to-cart {
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            border-radius: 10px; color: #fff; border: none;
+            width: 100%; padding: 0.7rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+        }
+        .product-card[data-category="combo"]:hover { box-shadow: 0 18px 40px rgba(13,148,136,0.3); }
+
+        .add-to-cart:hover { opacity: 0.88; transform: scale(1.02); }
+
+        /* Footer */
+        footer { background: linear-gradient(135deg, #0f0c29, #302b63); color: rgba(255,255,255,0.5); text-align: center; padding: 1.5rem; margin-top: 2rem; font-size: 0.9rem; }
+
+        @media (max-width: 600px) {
+            .page-hero h2 { font-size: 2rem; }
+            .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="images/logo.svg" alt="ComicTradersHub" style="height:52px;width:auto;">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="cart.html" class="cart-nav-btn"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <div class="page-hero">
+            <h2>Our <span>Products</span></h2>
+            <p>Browse our wide range of quality products across all categories</p>
+        </div>
+
+        <div class="filters">
+            <select id="category-filter">
+                <option value="all">&#128269; All Categories</option>
+                <option value="nuts">&#129372; Nuts</option>
+                <option value="fruits">&#127817; Dried Fruits</option>
+                <option value="seeds">&#127807; Seeds</option>
+                <option value="mixed">&#129381; Mixed Dry Fruit Pack</option>
+                <option value="combo">&#127873; Combo Pack</option>
+            </select>
+            <select id="price-filter">
+                <option value="all">&#128176; All Prices</option>
+                <option value="0-50">&#8377;0 - &#8377;2,000</option>
+                <option value="50-100">&#8377;2,000 - &#8377;5,000</option>
+                <option value="100+">&#8377;5,000+</option>
+            </select>
+        </div>
+
+        <section class="products-section">
+            <div class="products-grid">
+
+                <!-- Almonds -->
+                <div class="product-card" data-category="nuts" data-price="49">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
+                        <span class="cat-tag" style="background:#fef9c3;color:#92400e;"><i class="fas fa-seedling"></i> Nuts</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Almond.webp" alt="Almonds" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Almonds</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(128)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,299</span>
+                            <span class="old-price">&#8377;1,799</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Almonds', 49.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Peanuts -->
+                <div class="product-card" data-category="nuts" data-price="15">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fef9c3,#fef08a);">
+                        <span class="cat-tag" style="background:#fef9c3;color:#92400e;"><i class="fas fa-seedling"></i> Nuts</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Pea.webp" alt="Peanuts" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Peanuts</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                            <span class="review-count">(214)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;549</span>
+                            <span class="old-price">&#8377;749</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Peanuts', 15.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Walnuts -->
+                <div class="product-card" data-category="nuts" data-price="55">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
+                        <span class="cat-tag" style="background:#fef9c3;color:#92400e;"><i class="fas fa-seedling"></i> Nuts</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Wulnuts.webp" alt="Walnuts" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Walnuts</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(97)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,499</span>
+                            <span class="old-price">&#8377;1,999</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Walnuts', 55.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Cashews -->
+                <div class="product-card" data-category="nuts" data-price="39">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
+                        <span class="cat-tag" style="background:#fef9c3;color:#92400e;"><i class="fas fa-seedling"></i> Nuts</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+<img src="images/Cashews.webp" alt="Cashews" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Cashews</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                            <span class="review-count">(143)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,199</span>
+                            <span class="old-price">&#8377;1,599</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Cashews', 39.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Brazil Nuts -->
+                <div class="product-card" data-category="nuts" data-price="62">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
+                        <span class="cat-tag" style="background:#fef9c3;color:#92400e;"><i class="fas fa-seedling"></i> Nuts</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+<img src="images/Brazil Nuts.webp" alt="Brazil Nuts" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Brazil Nuts</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(58)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,899</span>
+                            <span class="old-price">&#8377;2,499</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Brazil Nuts', 62.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Pistachios -->
+                <div class="product-card" data-category="nuts" data-price="72">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
+                        <span class="cat-tag" style="background:#fef9c3;color:#92400e;"><i class="fas fa-seedling"></i> Nuts</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <div style="font-size:4rem;">&#129381;</div>
+                    </div>
+                    <div class="product-info">
+                        <h4>Pistachios</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(116)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,999</span>
+                            <span class="old-price">&#8377;2,699</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Pistachios', 72.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Dried Apricots -->
+                <div class="product-card" data-category="fruits" data-price="29">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#ffedd5,#fed7aa);">
+                        <span class="cat-tag" style="background:#ffedd5;color:#9a3412;"><i class="fas fa-apple-alt"></i> Dried Fruits</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+<img src="images/Dried Appricot.webp" alt="Dried Apricots" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Dried Apricots</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(210)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;699</span>
+                            <span class="old-price">&#8377;999</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Dried Apricots', 29.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Raisins -->
+                <div class="product-card" data-category="fruits" data-price="19">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);">
+                        <span class="cat-tag" style="background:#ffedd5;color:#9a3412;"><i class="fas fa-apple-alt"></i> Dried Fruits</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Kishmish.webp" alt="Raisins" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Raisins</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                            <span class="review-count">(76)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;549</span>
+                            <span class="old-price">&#8377;799</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Raisins', 19.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Anjeer -->
+                <div class="product-card" data-category="fruits" data-price="35">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#faf5ff,#ede9fe);">
+                        <span class="cat-tag" style="background:#ffedd5;color:#9a3412;"><i class="fas fa-apple-alt"></i> Dried Fruits</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Anjeer.webp" alt="Anjeer" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Anjeer (Dried Figs)</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(89)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;899</span>
+                            <span class="old-price">&#8377;1,199</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Anjeer (Dried Figs)', 35.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Cranberries -->
+                <div class="product-card" data-category="fruits" data-price="28">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fff1f2,#fecdd3);">
+                        <span class="cat-tag" style="background:#ffedd5;color:#9a3412;"><i class="fas fa-apple-alt"></i> Dried Fruits</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Cranberries.webp" alt="Cranberries" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Cranberries</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(104)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;749</span>
+                            <span class="old-price">&#8377;1,099</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Cranberries', 28.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Figs -->
+                <div class="product-card" data-category="fruits" data-price="32">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#f7fee7,#d9f99d);">
+                        <span class="cat-tag" style="background:#ffedd5;color:#9a3412;"><i class="fas fa-apple-alt"></i> Dried Fruits</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Figs.webp" alt="Figs" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Figs</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                            <span class="review-count">(67)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;849</span>
+                            <span class="old-price">&#8377;1,149</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Figs', 32.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="product-card" data-category="fruits" data-price="25">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fffbeb,#fde68a);">
+                        <span class="cat-tag" style="background:#ffedd5;color:#9a3412;"><i class="fas fa-apple-alt"></i> Dried Fruits</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Dates.webp" alt="Dates" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Dates</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(152)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;649</span>
+                            <span class="old-price">&#8377;949</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Dates', 25.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Chia Seeds -->
+                <div class="product-card" data-category="seeds" data-price="24">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);">
+                        <span class="cat-tag" style="background:#dcfce7;color:#166534;"><i class="fas fa-spa"></i> Seeds</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+<img src="images/Chia Seeds.webp" alt="Chia Seeds" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Chia Seeds</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(91)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;799</span>
+                            <span class="old-price">&#8377;1,099</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Chia Seeds', 24.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Pumpkin Seeds -->
+                <div class="product-card" data-category="seeds" data-price="22">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);">
+                        <span class="cat-tag" style="background:#dcfce7;color:#166534;"><i class="fas fa-spa"></i> Seeds</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+<img src="images/Pumpkin Seeds.webp" alt="Pumpkin Seeds" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Pumpkin Seeds</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                            <span class="review-count">(63)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;649</span>
+                            <span class="old-price">&#8377;899</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Pumpkin Seeds', 22.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+                <!-- Flax Seeds -->
+                <div class="product-card" data-category="seeds" data-price="18">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fffbeb,#fde68a);">
+                        <span class="cat-tag" style="background:#dcfce7;color:#166534;"><i class="fas fa-spa"></i> Seeds</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <img src="images/Flax Seeds.webp" alt="Flax Seeds" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>Flax Seeds</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(78)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;499</span>
+                            <span class="old-price">&#8377;749</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Flax Seeds', 18.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Trail Mix -->
+                <div class="product-card" data-category="mixed" data-price="45">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fdf2f8,#fce7f3);">
+                        <span class="cat-tag" style="background:#fdf2f8;color:#9d174d;"><i class="fas fa-layer-group"></i> Mixed Pack</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <div style="font-size:4rem;">&#129381;</div>
+                    </div>
+                    <div class="product-info">
+                        <h4>Trail Mix</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(132)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,099</span>
+                            <span class="old-price">&#8377;1,499</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Trail Mix', 45.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Mix Nuts -->
+                <div class="product-card" data-category="mixed" data-price="58">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fdf2f8,#fce7f3);">
+                        <span class="cat-tag" style="background:#fdf2f8;color:#9d174d;"><i class="fas fa-layer-group"></i> Mixed Pack</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <div style="font-size:4rem;">&#129372;</div>
+                    </div>
+                    <div class="product-info">
+                        <h4>Mix Nuts</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(98)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,499</span>
+                            <span class="old-price">&#8377;1,999</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Mix Nuts', 58.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Mix Dry Fruits -->
+                <div class="product-card" data-category="mixed" data-price="65">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#fdf2f8,#fce7f3);">
+                        <span class="cat-tag" style="background:#fdf2f8;color:#9d174d;"><i class="fas fa-layer-group"></i> Mixed Pack</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <div style="font-size:4rem;">&#127815;</div>
+                    </div>
+                    <div class="product-info">
+                        <h4>Mix Dry Fruits</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(174)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,699</span>
+                            <span class="old-price">&#8377;2,299</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Mix Dry Fruits', 65.99)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Combo Pack -->
+                <div class="product-card" data-category="combo" data-price="99">
+                    <div class="product-icon-banner" style="background:linear-gradient(135deg,#ccfbf1,#a7f3d0);">
+                        <span class="cat-tag" style="background:#ccfbf1;color:#0f766e;"><i class="fas fa-gift"></i> Combo</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
+                        <div style="font-size:4rem;">&#127873;</div>
+                    </div>
+                    <div class="product-info">
+                        <h4>Super Saver Combo</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="review-count">(45)</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price">&#8377;2,499</span>
+                            <span class="old-price">&#8377;3,199</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Super Saver Combo', 2499)"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 ComicTradersHub. All rights reserved. <i class="fas fa-heart" style="color:#e74c3c"></i></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

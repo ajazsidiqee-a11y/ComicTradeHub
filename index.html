@@ -1,0 +1,820 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComicTradersHub - Home</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Poppins:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Premium UI Overrides */
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9);
+            --accent-gradient: linear-gradient(135deg, #f97316, #fbbf24);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 20px 40px rgba(109, 40, 217, 0.15);
+        }
+
+        /* Hero Enhancements */
+        .hero {
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: white;
+            padding: 5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(109,40,217,0.15) 0%, transparent 50%);
+            animation: heroPulse 12s infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes heroPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .hero-left {
+            flex: 1;
+            min-width: 320px;
+            max-width: 600px;
+            z-index: 1;
+            animation: slideUp 1s ease backwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-tag {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .hero-left h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .hero-left h1 span {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-desc {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .hero-btns { display: flex; gap: 1rem; }
+        .hero-btns a {
+            padding: 0.9rem 2.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #1a1a1a;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.6);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .hero-right {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            z-index: 1;
+        }
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.8rem 1.5rem;
+            border-radius: 24px;
+            text-align: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .stat-box:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(251, 191, 36, 0.4);
+        }
+        .stat-box i { font-size: 2.2rem; color: #fbbf24; margin-bottom: 0.8rem; }
+        .stat-box strong { display: block; font-size: 2rem; font-weight: 800; color: white; margin-bottom: 0.2rem; }
+        .stat-box span { font-size: 0.85rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+        .dt-stat { grid-column: span 2; background: rgba(109, 40, 217, 0.2); border-color: rgba(109, 40, 217, 0.4); }
+
+        /* Hero Stats Slider */
+        .slider-container {
+            grid-column: 1 / -1;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .hero-stats-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 200%;
+        }
+        .stat-slide {
+            width: 50%;
+            flex-shrink: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+        .slider-dots .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .slider-dots .dot.active {
+            background: #fbbf24;
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            border-bottom: 4px solid #6d28d9;
+        }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: var(--hover-shadow); }
+        .feature-card i { font-size: 2.5rem; color: #6d28d9; margin-bottom: 1rem; }
+        .feature-card h4 { font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; }
+        .feature-card p { font-size: 0.9rem; color: #64748b; margin: 0; }
+
+        /* Trust Bar */
+        .trust-bar {
+            background: #1e293b;
+            color: #fbbf24;
+            padding: 1rem 0;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+            border-top: 2px solid rgba(251, 191, 36, 0.2);
+            border-bottom: 2px solid rgba(251, 191, 36, 0.2);
+        }
+        .trust-bar-track {
+            display: flex;
+            gap: 4rem;
+            animation: scroll 25s linear infinite;
+        }
+        .trust-bar-track span { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Products Section */
+        .products-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; background: #f8fafc; border-radius: 30px; margin-bottom: 4rem;}
+        .section-heading { text-align: center; margin-bottom: 3.5rem; }
+        .section-tag {
+            display: inline-block; padding: 0.4rem 1.2rem; background: rgba(249, 115, 22, 0.1);
+            color: #f97316; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 1rem;
+        }
+        .section-heading h2 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 0.5rem; color: #0f172a; }
+        .section-heading h2 span { color: #6d28d9; }
+        .section-sub { color: #64748b; font-size: 1.1rem; }
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;
+        }
+        .product-card {
+            background: white; border-radius: 24px; padding: 1.2rem;
+            position: relative; box-shadow: var(--card-shadow);
+            transition: all 0.4s ease; border: 1px solid rgba(0,0,0,0.03);
+        }
+        .product-card:hover { transform: translateY(-12px); box-shadow: var(--hover-shadow); }
+        .img-wrap { position: relative; border-radius: 16px; overflow: hidden; height: 260px; background: #f1f5f9; }
+        .img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .product-card:hover .img-wrap img { transform: scale(1.15); }
+        .img-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: all 0.3s ease; backdrop-filter: blur(2px);
+        }
+        .product-card:hover .img-overlay { opacity: 1; }
+        .img-overlay span {
+            background: white; color: #0f172a; padding: 0.6rem 1.2rem;
+            border-radius: 25px; font-weight: 700; font-size: 0.9rem;
+            transform: translateY(20px); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .product-card:hover .img-overlay span { transform: translateY(0); }
+        .card-body { padding: 1.5rem 0.5rem 0.5rem; text-align: center; }
+        .card-body h4 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.5rem; color: #1e293b; font-weight: 700; }
+        .stars { color: #fbbf24; font-size: 1.1rem; letter-spacing: 2px; }
+        .price-row { margin: 0.8rem 0 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
+        .price { font-size: 1.5rem; font-weight: 800; color: #f97316; }
+        .old-price { font-size: 1rem; color: #94a3b8; text-decoration: line-through; }
+        .add-to-cart {
+            width: 100%; padding: 0.9rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 1px solid #cbd5e1; border-radius: 14px;
+            color: #6d28d9; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .add-to-cart:hover {
+            background: linear-gradient(135deg, #6d28d9, #4c1d95);
+            color: white; border-color: transparent;
+            box-shadow: 0 8px 20px rgba(109, 40, 217, 0.3);
+        }
+        .badge {
+            position: absolute; top: 1.5rem; left: 1.5rem;
+            padding: 0.4rem 1rem; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 800; z-index: 2; color: white;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .badge.hot { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+        .badge.new { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+        .badge.sale { background: linear-gradient(135deg, #f59e0b, #b45309); box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+        .wish-btn {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            cursor: pointer; z-index: 2; color: #94a3b8; transition: all 0.3s ease; font-size: 1.1rem;
+        }
+        .wish-btn:hover { color: #ef4444; transform: scale(1.15) rotate(5deg); }
+
+        /* Testimonials Enhancement */
+        .testimonials {
+            position: relative;
+            background: var(--primary-bg);
+            border-radius: 0;
+            margin: 0;
+        }
+        .testimonials::before {
+            content: ''; position: absolute; inset: 0;
+            background: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.03"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 4rem 1.5rem; text-align: center; }
+            .hero-left h1 { font-size: 2.5rem; }
+            .hero-btns { justify-content: center; }
+            .section-heading h2 { font-size: 2.2rem; }
+        }
+        @media (max-width: 767px) {
+            .stat-slide { gap: 0.8rem; }
+        }
+        @media (max-width: 479px) {
+            .stat-slide { gap: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="images/logo.svg" alt="ComicTradersHub" style="height:52px;width:auto;">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="admin-login.html"><i class="fas fa-user-shield"></i> Admin</a></li>
+                <li><a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+            </ul>
+            <div class="auth-btns" id="authBtns">
+                <div class="login-dropdown">
+                    <button class="btn-login" onclick="toggleLoginDropdown()"><i class="fas fa-sign-in-alt"></i> Login <i class="fas fa-caret-down" style="margin-left:4px;font-size:0.75rem;"></i></button>
+                    <div class="login-drop-menu" id="loginDropMenu">
+                        <div class="login-drop-item" onclick="window.location.href='login.html'"><i class="fas fa-user"></i> User Login</div>
+                        <div class="login-drop-item" onclick="window.location.href='admin-login.html'"><i class="fas fa-user-shield"></i> Admin Login</div>
+                    </div>
+                </div>
+                <button class="btn-register" onclick="window.location.href='login.html'"><i class="fas fa-user-plus"></i> Sign Up</button>
+            </div>
+            <div class="user-info" id="userInfo" style="display:none;">
+                <i class="fas fa-user-circle" style="color:#fbbf24;font-size:1.1rem;"></i>
+                <span id="userGreet" style="color:#fff;font-size:0.82rem;font-weight:600;"></span>
+                <a href="user-dashboard.html" style="color:#a78bfa; font-size:0.85rem; font-weight:600; text-decoration:none; margin:0 0.5rem;"><i class="fas fa-th-large"></i> Dashboard</a>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button></nav>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav"><div class="mobile-nav-inner"><button class="mobile-nav-close" onclick="toggleMobileNav()">&times;</button><a href="index.html"><i class="fas fa-home"></i> Home</a><a href="products.html"><i class="fas fa-box"></i> Products</a><a href="about.html"><i class="fas fa-info-circle"></i> About</a><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a><a href="admin-login.html"><i class="fas fa-user-shield"></i> Admin</a><div class="mob-divider"></div><a href="cart.html" class="mob-cart"><i class="fas fa-shopping-cart"></i> Cart</a><div class="mob-divider"></div><button class="mob-link" onclick="window.location.href='login.html'"><i class="fas fa-sign-in-alt"></i> Login</button><button class="mob-link" onclick="window.location.href='login.html'"><i class="fas fa-user-plus"></i> Sign Up</button></div></div><main>
+
+        <!-- Hero -->
+        <section class="hero">
+            <!-- Left Side -->
+            <div class="hero-left">
+                <p class="hero-tag"><i class="fas fa-bolt"></i> New Arrivals Every Week</p>
+                <h1>Welcome to <span>ComicTradersHub</span></h1>
+                <p class="hero-desc">Your trusted online marketplace for quality products at unbeatable prices.</p>
+                <div class="hero-btns">
+                    <a href="products.html" class="btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+                    <a href="about.html" class="btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <!-- Right Side -->
+            <div class="hero-right">
+                <div class="slider-container">
+                    <div class="hero-stats-slider" id="heroStatsSlider">
+                        <div class="stat-slide">
+                            <div class="stat-box">
+                                <i class="fas fa-box-open"></i>
+                                <strong>15+</strong>
+                                <span>Products</span>
+                            </div>
+                            <div class="stat-box">
+                                <i class="fas fa-users"></i>
+                                <strong>1K+</strong>
+                                <span>Customers</span>
+                            </div>
+                        </div>
+                        <div class="stat-slide">
+                            <div class="stat-box">
+                                <i class="fas fa-star"></i>
+                                <strong>80%</strong>
+                                <span>Satisfaction</span>
+                            </div>
+                            <div class="stat-box">
+                                <i class="fas fa-truck"></i>
+                                <strong>Free*</strong>
+                                <span>Local Shipping</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(0)"></span>
+                        <span class="dot" onclick="goToSlide(1)"></span>
+                    </div>
+                </div>
+                <div class="stat-box dt-stat">
+                    <i class="fas fa-calendar-alt"></i>
+                    <strong id="heroDate"></strong>
+                    <span id="heroTime"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Bar -->
+        <div class="trust-bar">
+            <div class="trust-bar-track">
+                <span><i class="fas fa-shield-alt"></i> 100% Secure Payments</span>
+                <span><i class="fas fa-truck"></i> Free Local Delivery</span>
+                <span><i class="fas fa-star"></i> Premium Quality Products</span>
+                <span><i class="fas fa-headset"></i> 24/7 Customer Support</span>
+                <span><i class="fas fa-undo"></i> Easy Returns Policy</span>
+                <span><i class="fas fa-tag"></i> Best Prices Guaranteed</span>
+                <span><i class="fas fa-leaf"></i> 100% Natural & Fresh</span>
+                <span><i class="fas fa-award"></i> Trusted by 1000+ Customers</span>
+                <!-- duplicate for seamless loop -->
+                <span><i class="fas fa-shield-alt"></i> 100% Secure Payments</span>
+                <span><i class="fas fa-truck"></i> Free Local Delivery</span>
+                <span><i class="fas fa-star"></i> Premium Quality Products</span>
+                <span><i class="fas fa-headset"></i> 24/7 Customer Support</span>
+                <span><i class="fas fa-undo"></i> Easy Returns Policy</span>
+                <span><i class="fas fa-tag"></i> Best Prices Guaranteed</span>
+                <span><i class="fas fa-leaf"></i> 100% Natural & Fresh</span>
+                <span><i class="fas fa-award"></i> Trusted by 1000+ Customers</span>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-shipping-fast"></i>
+                <h4>Free Delivery</h4>
+                <p>Within district only</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-truck-moving"></i>
+                <h4>Outside District</h4>
+                <p>Shipping charges apply</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-lock"></i>
+                <h4>Secure Payment</h4>
+                <p>100% protected</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-headset"></i>
+                <h4>24/7 Support</h4>
+                <p>Always here for you</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Fault Protection</h4>
+                <p>Replacement on genuine defects only</p>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section class="products-section">
+            <div class="section-heading">
+                <span class="section-tag"><i class="fas fa-fire"></i> Top Picks</span>
+                <h2>Featured <span>Products</span></h2>
+                <p class="section-sub">Handpicked items loved by thousands of customers</p>
+                <div class="heading-divider"><span></span><i class="fas fa-star"></i><span></span></div>
+            </div>
+            <div class="products-grid">
+
+                <div class="product-card reveal">
+                    <span class="badge hot">Hot</span>
+                    <button class="wish-btn"><i class="far fa-heart"></i></button>
+                    <div class="img-wrap">
+                        <img src="images/Almond.webp" alt="Almonds">
+                        <div class="img-overlay"><span><i class="fas fa-eye"></i> Quick View</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h4>Premium Almonds</h4>
+                        <div class="stars">★★★★★</div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,299</span>
+                            <span class="old-price">&#8377;1,799</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Premium Almonds', 1299)">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card reveal">
+                    <span class="badge new">New</span>
+                    <button class="wish-btn"><i class="far fa-heart"></i></button>
+                    <div class="img-wrap">
+                        <img src="images/Wulnuts.webp" alt="Walnuts">
+                        <div class="img-overlay"><span><i class="fas fa-eye"></i> Quick View</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h4>Fresh Walnuts</h4>
+                        <div class="stars">★★★★★</div>
+                        <div class="price-row">
+                            <span class="price">&#8377;1,499</span>
+                            <span class="old-price">&#8377;1,999</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Fresh Walnuts', 1499)">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card reveal">
+                    <span class="badge sale">Sale</span>
+                    <button class="wish-btn"><i class="far fa-heart"></i></button>
+                    <div class="img-wrap">
+                        <img src="images/Kishmish.webp" alt="Raisins">
+                        <div class="img-overlay"><span><i class="fas fa-eye"></i> Quick View</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h4>Golden Raisins</h4>
+                        <div class="stars">★★★★☆</div>
+                        <div class="price-row">
+                            <span class="price">&#8377;549</span>
+                            <span class="old-price">&#8377;799</span>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('Golden Raisins', 549)">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="view-all">
+                <a href="products.html" class="btn-primary">View All Products <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials reveal">
+            <div class="sec-title" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:#fff;margin-bottom:0.4rem;">What Our <span style="color:#ffd700;font-style:italic;">Customers Say</span></div>
+            <p class="sec-sub" style="font-family:'Poppins',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);margin-bottom:2.5rem;">Real reviews from real customers who love our products</p>
+            <div class="testi-grid">
+                <div class="testi-card">
+                    <div class="quote-icon">&ldquo;</div>
+                    <div class="testi-stars">★★★★★</div>
+                    <p>The almonds are absolutely fresh and crunchy. Best quality I've found online. Will definitely order again!</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar" style="background:linear-gradient(135deg,#6d28d9,#a78bfa);">A</div>
+                        <div><strong>Aisha Khan</strong><span>Srinagar, J&K</span></div>
+                    </div>
+                </div>
+                <div class="testi-card">
+                    <div class="quote-icon">&ldquo;</div>
+                    <div class="testi-stars">★★★★★</div>
+                    <p>Fast delivery and the walnuts were packed so well. The taste is amazing — exactly what I was looking for!</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar" style="background:linear-gradient(135deg,#059669,#34d399);">R</div>
+                        <div><strong>Rahul Sharma</strong><span>Pulwama, J&K</span></div>
+                    </div>
+                </div>
+                <div class="testi-card">
+                    <div class="quote-icon">&ldquo;</div>
+                    <div class="testi-stars">★★★★☆</div>
+                    <p>Great prices and genuine products. The raisins are golden and sweet. Customer support was very helpful too.</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar" style="background:linear-gradient(135deg,#d97706,#fbbf24);">M</div>
+                        <div><strong>Mehak Mir</strong><span>Anantnag, J&K</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <h3><img src="images/logo.svg" alt="ComicTradersHub" style="height:40px;width:auto;"></h3>
+                <p>Your trusted marketplace for quality products.</p>
+                <div class="socials">
+                    <a href="https://www.facebook.com/share/18egQbTZcf/"
+                     target="_blank" style="background:#1877f2;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="background:#1da1f2;"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.youtube.com/@ajaz-sidiqee" target="_blank" style="background:#ff0000;"><i class="fab fa-youtube"></i></a>
+                    <a href="https://wa.me/917006100567" target="_blank" style="background:#25d366;"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="admin-login.html">Admin Login</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ComicTradersHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div class="auth-overlay" id="adminLoginModal">
+        <div class="auth-modal">
+            <div class="auth-modal-header" style="background:linear-gradient(135deg,#1a0533,#7c3aed);">
+                <h3><i class="fas fa-user-shield"></i> Admin Login</h3>
+                <button class="auth-close" onclick="closeModal('adminLoginModal')">&times;</button>
+            </div>
+            <div class="auth-modal-body">
+                <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.78rem;color:#5b21b6;margin-bottom:1rem;"><i class="fas fa-shield-alt" style="margin-right:0.4rem;"></i>Admin access only. Unauthorized login is prohibited.</div>
+                <div class="auth-field">
+                    <label>Admin Email</label>
+                    <input type="email" id="adminEmail">
+                    <span class="auth-err" id="adminEmailErr"></span>
+                </div>
+                <div class="auth-field">
+                    <label>Password</label>
+                    <div class="pass-wrap">
+                        <input type="password" id="adminPass">
+                        <i class="fas fa-eye toggle-pass" onclick="togglePass('adminPass',this)"></i>
+                    </div>
+                    <span class="auth-err" id="adminPassErr"></span>
+                </div>
+                <div id="adminErr" class="auth-alert" style="display:none;"></div>
+                <button class="auth-submit" style="background:linear-gradient(135deg,#5b21b6,#1a0533);" onclick="handleAdminLogin()"><i class="fas fa-user-shield"></i> Admin Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="auth-overlay" id="loginModal">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
+                <button class="auth-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <div class="auth-modal-body">
+                <!-- Step 1: credentials -->
+                <div id="loginStep1">
+                    <div class="auth-field">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail">
+                        <span class="auth-err" id="loginEmailErr"></span>
+                    </div>
+                    <div class="auth-field">
+                        <label>Password</label>
+                        <div class="pass-wrap">
+                            <input type="password" id="loginPass">
+                            <i class="fas fa-eye toggle-pass" onclick="togglePass('loginPass',this)"></i>
+                        </div>
+                        <span class="auth-err" id="loginPassErr"></span>
+                    </div>
+                    <div id="loginErr" class="auth-alert" style="display:none;"></div>
+                    <button class="auth-submit" onclick="handleLoginStep1()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                    <p class="auth-switch">Don't have an account? <a href="#" onclick="switchModal('loginModal','registerModal')">Sign Up here</a></p>
+                </div>
+                <!-- Step 2: OTP -->
+                <div id="loginStep2" style="display:none;">
+                    <div style="text-align:center;margin-bottom:1rem;">
+                        <i class="fas fa-envelope-open-text" style="font-size:2rem;color:#6d28d9;"></i>
+                        <p style="font-size:0.85rem;color:#6b7280;margin-top:0.5rem;">OTP sent to <strong id="loginOtpEmail"></strong></p>
+                    </div>
+                    <div class="auth-field">
+                        <label>Enter OTP</label>
+                        <input type="text" id="loginOtp" placeholder="6-digit OTP" maxlength="6" style="letter-spacing:6px;font-size:1.2rem;text-align:center;">
+                        <span class="auth-err" id="loginOtpErr"></span>
+                    </div>
+                    <div id="loginOtpAlert" class="auth-alert" style="display:none;"></div>
+                    <button class="auth-submit" onclick="handleLoginStep2()"><i class="fas fa-check-circle"></i> Verify & Login</button>
+                    <p style="text-align:center;font-size:0.8rem;margin-top:0.8rem;color:#9ca3af;">Didn't receive? <a href="#" onclick="handleLoginStep1()" style="color:#6d28d9;">Resend OTP</a></p>
+                    <p style="text-align:center;font-size:0.8rem;margin-top:0.3rem;"><a href="#" onclick="document.getElementById('loginStep1').style.display='block';document.getElementById('loginStep2').style.display='none';" style="color:#9ca3af;">? Back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="auth-overlay" id="registerModal">
+        <div class="auth-modal">
+            <div class="auth-modal-header">
+                <h3><i class="fas fa-user-plus"></i> Sign Up</h3>
+                <button class="auth-close" onclick="closeModal('registerModal')">&times;</button>
+            </div>
+            <div class="auth-modal-body">
+                <!-- Step 1: form -->
+                <div id="regStep1">
+                    <div class="auth-field">
+                        <label>Full Name</label>
+                        <input type="text" id="regName" placeholder="Your full name">
+                        <span class="auth-err" id="regNameErr"></span>
+                    </div>
+                    <div class="auth-field">
+                        <label>Email</label>
+                        <input type="email" id="regEmail" placeholder="Your email address">
+                        <span class="auth-err" id="regEmailErr"></span>
+                    </div>
+                    <div class="auth-field">
+                        <label>Phone</label>
+                        <input type="tel" id="regPhone" placeholder="10-digit mobile number">
+                        <span class="auth-err" id="regPhoneErr"></span>
+                    </div>
+                    <div class="auth-field">
+                        <label>Password</label>
+                        <div class="pass-wrap">
+                            <input type="password" id="regPass" placeholder="Min 6 characters">
+                            <i class="fas fa-eye toggle-pass" onclick="togglePass('regPass',this)"></i>
+                        </div>
+                        <span class="auth-err" id="regPassErr"></span>
+                    </div>
+                    <div class="auth-field">
+                        <label>Confirm Password</label>
+                        <div class="pass-wrap">
+                            <input type="password" id="regConfirm" placeholder="Re-enter password">
+                            <i class="fas fa-eye toggle-pass" onclick="togglePass('regConfirm',this)"></i>
+                        </div>
+                        <span class="auth-err" id="regConfirmErr"></span>
+                    </div>
+                    <div id="regErr" class="auth-alert" style="display:none;"></div>
+                    <button class="auth-submit" onclick="handleRegisterStep1()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                    <p class="auth-switch">Already have an account? <a href="#" onclick="switchModal('registerModal','loginModal')">Login here</a></p>
+                </div>
+                <!-- Step 2: OTP -->
+                <div id="regStep2" style="display:none;">
+                    <div style="text-align:center;margin-bottom:1rem;">
+                        <i class="fas fa-envelope-open-text" style="font-size:2rem;color:#6d28d9;"></i>
+                        <p style="font-size:0.85rem;color:#6b7280;margin-top:0.5rem;">OTP sent to <strong id="regOtpEmail"></strong></p>
+                    </div>
+                    <div class="auth-field">
+                        <label>Enter OTP</label>
+                        <input type="text" id="regOtp" placeholder="6-digit OTP" maxlength="6" style="letter-spacing:6px;font-size:1.2rem;text-align:center;">
+                        <span class="auth-err" id="regOtpErr"></span>
+                    </div>
+                    <div id="regOtpAlert" class="auth-alert" style="display:none;"></div>
+                    <div id="regSuccess" class="auth-success" style="display:none;"></div>
+                    <button class="auth-submit" onclick="handleRegisterStep2()"><i class="fas fa-check-circle"></i> Verify & Create Account</button>
+                    <p style="text-align:center;font-size:0.8rem;margin-top:0.8rem;color:#9ca3af;">Didn't receive? <a href="#" id="regResendLink" onclick="resendRegisterOTP()" style="color:#6d28d9;">Resend OTP</a></p>
+                    <p style="text-align:center;font-size:0.8rem;margin-top:0.3rem;"><a href="#" onclick="document.getElementById('regStep1').style.display='block';document.getElementById('regStep2').style.display='none';" style="color:#9ca3af;">? Back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+ 
+ 
+    <script src="script.js"></script>
+    <script src="otp-auth.js"></script>
+<script>
+    // Scroll reveal
+    var _ro = new IntersectionObserver(function(es) {
+        es.forEach(function(e) {
+            if (e.isIntersecting) { e.target.classList.add('visible'); _ro.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { _ro.observe(el); });
+
+    // Wishlist toggle
+    document.querySelectorAll('.wish-btn').forEach(function(b) {
+        b.addEventListener('click', function() {
+            var i = b.querySelector('i');
+            i.classList.toggle('far');
+            i.classList.toggle('fas');
+            i.style.color = i.classList.contains('fas') ? '#e74c3c' : '';
+        });
+    });
+
+    // Mobile nav toggle
+    function toggleMobileNav() {
+        var nav = document.getElementById('mobileNav');
+        var btn = document.getElementById('hamburger');
+        if (!nav || !btn) return;
+        nav.classList.toggle('open');
+        btn.classList.toggle('open');
+        document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+    }
+
+    // Close drawer when clicking backdrop
+    document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('mobileNav');
+        if (overlay) {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) toggleMobileNav();
+            });
+        }
+    });
+
+    // Hero Stats Slider
+    let currentSlide = 0;
+    const slider = document.getElementById('heroStatsSlider');
+    const dots = document.querySelectorAll('.slider-dots .dot');
+
+    window.goToSlide = function(index) {
+        currentSlide = index;
+        if(slider) slider.style.transform = `translateX(-${currentSlide * 50}%)`;
+        dots.forEach(function(dot, i) {
+            if(i === currentSlide) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    };
+
+    if (slider) {
+        setInterval(function() {
+            currentSlide = (currentSlide + 1) % 2;
+            goToSlide(currentSlide);
+        }, 4000);
+    }
+</script></body>
+</html>

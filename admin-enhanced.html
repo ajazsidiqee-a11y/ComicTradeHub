@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ComicTradersHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, #1a0533, #3b0764, #6d28d9);
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #7c3aed;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .admin-header h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fbbf24; }
+        .admin-header a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; }
+        .admin-header a:hover { color: #fbbf24; }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex; gap: 1rem; padding: 1.5rem 2rem;
+            background: #1e293b; border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #0f172a; border-radius: 12px; padding: 1rem 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+            border-left: 4px solid #6d28d9; flex: 1; min-width: 160px;
+        }
+        .stat-card.green  { border-left-color: #16a34a; }
+        .stat-card.orange { border-left-color: #f97316; }
+        .stat-card.blue   { border-left-color: #3b82f6; }
+        .stat-card i { font-size: 1.8rem; }
+        .stat-card.green  i { color: #4ade80; }
+        .stat-card.orange i { color: #fb923c; }
+        .stat-card.blue   i { color: #60a5fa; }
+        .stat-card .stat-purple i { color: #a78bfa; }
+        .stat-info strong { display: block; font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .stat-info span   { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 0.5rem; padding: 1.5rem 2rem 0; }
+        .tab {
+            padding: 0.6rem 1.4rem; border-radius: 10px 10px 0 0;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            border: none; background: #1e293b; color: #64748b;
+            transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .tab.active { background: #6d28d9; color: white; }
+        .tab:hover:not(.active) { background: #334155; color: #e2e8f0; }
+
+        /* Table Section */
+        .table-section { padding: 0 2rem 2rem; display: none; }
+        .table-section.active { display: block; }
+
+        .table-box {
+            background: #1e293b; border-radius: 0 14px 14px 14px;
+            overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .table-toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 1.5rem; border-bottom: 1px solid #334155;
+            flex-wrap: wrap; gap: 0.8rem;
+        }
+        .table-toolbar h3 { font-size: 1rem; font-weight: 700; color: #e2e8f0; }
+        .search-box {
+            background: #0f172a; border: 1px solid #334155; border-radius: 8px;
+            padding: 0.5rem 1rem; color: #e2e8f0; font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem; outline: none; width: 220px;
+        }
+        .search-box:focus { border-color: #6d28d9; }
+        .refresh-btn {
+            background: #6d28d9; color: white; border: none; padding: 0.5rem 1rem;
+            border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 0.82rem;
+            font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+            transition: opacity 0.2s;
+        }
+        .refresh-btn:hover { opacity: 0.85; }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { background: #0f172a; }
+        thead th { padding: 0.9rem 1.2rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        tbody tr { border-bottom: 1px solid #334155; transition: background 0.2s; }
+        tbody tr:hover { background: #0f172a; }
+        tbody td { padding: 0.9rem 1.2rem; font-size: 0.85rem; color: #cbd5e1; vertical-align: top; }
+        tbody td.name { font-weight: 600; color: #e2e8f0; }
+        .badge {
+            display: inline-block; padding: 0.2rem 0.7rem; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700;
+        }
+        .badge.answered { background: #052e16; color: #4ade80; }
+        .badge.pending  { background: #431407; color: #fb923c; }
+        .badge.unread   { background: #431407; color: #fb923c; }
+        .badge.read     { background: #1e3a8a; color: #60a5fa; }
+        .badge.replied  { background: #052e16; color: #4ade80; }
+        .empty-row td { text-align: center; color: #475569; padding: 2rem; font-style: italic; }
+
+        /* Action buttons */
+        .action-btn {
+            background: #6d28d9; color: white; border: none; padding: 0.3rem 0.7rem;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin: 0.1rem;
+            transition: background 0.2s;
+        }
+        .action-btn.danger { background: #dc2626; }
+        .action-btn.success { background: #16a34a; }
+        .action-btn:hover { opacity: 0.8; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: #1e293b; border-radius: 12px; padding: 2rem; width: 90%; max-width: 500px;
+            border: 1px solid #334155;
+        }
+        .modal h3 { color: #fbbf24; margin-bottom: 1rem; }
+        .modal textarea {
+            width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px;
+            padding: 0.8rem; color: #e2e8f0; font-family: 'Poppins', sans-serif; resize: vertical;
+            min-height: 100px; outline: none;
+        }
+        .modal textarea:focus { border-color: #6d28d9; }
+        .modal-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
+
+        footer { text-align: center; padding: 1.5rem; color: #334155; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <h1><i class="fas fa-database" style="color:#fbbf24;margin-right:0.5rem;"></i> Admin Dashboard</h1>
+        <a href="index.html"><i class="fas fa-home"></i> Back to Site</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-card green">
+            <i class="fas fa-users"></i>
+            <div class="stat-info"><strong id="totalUsers">0</strong><span>Registered Users</span></div>
+        </div>
+        <div class="stat-card orange">
+            <i class="fas fa-envelope"></i>
+            <div class="stat-info"><strong id="totalMessages">0</strong><span>Messages</span></div>
+        </div>
+        <div class="stat-card blue">
+            <i class="fas fa-question-circle"></i>
+            <div class="stat-info"><strong id="totalFaqs">0</strong><span>FAQ Questions</span></div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-shopping-cart"></i>
+            <div class="stat-info"><strong id="totalOrders">0</strong><span>Total Orders</span></div>
+        </div>
+        <div class="stat-card" style="border-left-color:#fbbf24;">
+            <i class="fas fa-box" style="color:#fbbf24;"></i>
+            <div class="stat-info"><strong id="totalProducts">0</strong><span>Total Products</span></div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('customers',this)"><i class="fas fa-users"></i> Customers</button>
+        <button class="tab" onclick="switchTab('products',this)"><i class="fas fa-box"></i> Products</button>
+        <button class="tab" onclick="switchTab('orders',this)"><i class="fas fa-shopping-cart"></i> Orders</button>
+        <button class="tab" onclick="switchTab('messages',this)"><i class="fas fa-envelope"></i> Messages</button>
+        <button class="tab" onclick="switchTab('faqs',this)"><i class="fas fa-comments"></i> FAQs</button>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="table-section active" id="tab-customers">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-users" style="color:#4ade80;margin-right:0.5rem;"></i> Registered Customers</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search users..." oninput="filterTable('usersTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="usersTable">
+                <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Registered</th><th>Actions</th></tr></thead>
+                <tbody id="usersBody"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="table-section" id="tab-products">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-box" style="color:#fbbf24;margin-right:0.5rem;"></i> Manage Products</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search products..." oninput="filterTable('productsTable',this.value)">
+                    <button class="refresh-btn" style="background:#f97316;" onclick="openAddProductModal()"><i class="fas fa-plus"></i> Add Product</button>
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="productsTable">
+                <thead><tr><th>#</th><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="productsBody"><tr class="empty-row"><td colspan="8">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Messages Table -->
+    <div class="table-section" id="tab-messages">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-envelope" style="color:#fb923c;margin-right:0.5rem;"></i> Contact Messages</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search messages..." oninput="filterTable('messagesTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="messagesTable">
+                <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Reply</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="messagesBody"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FAQs Table -->
+    <div class="table-section" id="tab-faqs">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-comments" style="color:#60a5fa;margin-right:0.5rem;"></i> FAQ Questions</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search FAQs..." oninput="filterTable('faqsTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="faqsTable">
+                <thead><tr><th>#</th><th>Question</th><th>Asked By</th><th>Answer</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="faqsBody"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-section" id="tab-orders">
+        <div class="table-box">
+            <div class="table-toolbar">
+                <h3><i class="fas fa-shopping-cart" style="color:#a78bfa;margin-right:0.5rem;"></i> Customer Orders</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <input class="search-box" placeholder="Search orders..." oninput="filterTable('ordersTable',this.value)">
+                    <button class="refresh-btn" onclick="loadAll()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+            </div>
+            <table id="ordersTable">
+                <thead><tr><th>#</th><th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="ordersBody"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div class="modal" id="replyModal">
+        <div class="modal-content">
+            <h3>Reply to Message</h3>
+            <textarea id="replyText" placeholder="Type your reply here..."></textarea>
+            <div class="modal-buttons">
+                <button class="action-btn" onclick="closeModal()">Cancel</button>
+                <button class="action-btn success" onclick="sendReply()">Send Reply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <h3 id="productModalTitle"><i class="fas fa-box"></i> Add Product</h3>
+            <input type="hidden" id="productId">
+            <label style="color:#94a3b8;font-size:0.8rem;display:block;margin-bottom:0.3rem;">Name</label>
+            <input type="text" id="productName" placeholder="Product name" style="width:100%; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:0.6rem; color:#e2e8f0; margin-bottom:1rem; outline:none;">
+            <label style="color:#94a3b8;font-size:0.8rem;display:block;margin-bottom:0.3rem;">Category</label>
+            <input type="text" id="productCategory" placeholder="e.g. Nuts, Seeds, Dry Fruits" style="width:100%; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:0.6rem; color:#e2e8f0; margin-bottom:1rem; outline:none;">
+            <div style="display:flex; gap:1rem;">
+                <div style="flex:1;">
+                    <label style="color:#94a3b8;font-size:0.8rem;display:block;margin-bottom:0.3rem;">Price (₹)</label>
+                    <input type="number" id="productPrice" placeholder="Price" min="0" step="0.01" style="width:100%; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:0.6rem; color:#e2e8f0; margin-bottom:1rem; outline:none;">
+                </div>
+                <div style="flex:1;">
+                    <label style="color:#94a3b8;font-size:0.8rem;display:block;margin-bottom:0.3rem;">Stock</label>
+                    <input type="number" id="productStock" placeholder="Stock quantity" min="0" style="width:100%; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:0.6rem; color:#e2e8f0; margin-bottom:1rem; outline:none;">
+                </div>
+            </div>
+            <label style="color:#94a3b8;font-size:0.8rem;display:block;margin-bottom:0.3rem;">Image URL</label>
+            <input type="text" id="productImage" placeholder="images/product.webp or URL" style="width:100%; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:0.6rem; color:#e2e8f0; margin-bottom:1rem; outline:none;">
+            <label style="color:#94a3b8;font-size:0.8rem;display:block;margin-bottom:0.3rem;">Status</label>
+            <select id="productStatus" style="width:100%; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:0.6rem; color:#e2e8f0; margin-bottom:1rem; outline:none;">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="action-btn" onclick="closeModal()">Cancel</button>
+                <button class="action-btn success" onclick="saveProduct()">Save Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports -->
+    <div class="table-section" id="tab-reports">
+        <div class="table-box" style="padding:4rem 2rem; text-align:center;">
+            <i class="fas fa-chart-pie" style="font-size:4rem; color:#60a5fa; margin-bottom:1.5rem;"></i>
+            <h3 style="font-size:1.5rem; color:#e2e8f0; margin-bottom:0.5rem;">Advanced Reports</h3>
+            <p style="color:#64748b; font-size:0.95rem; max-width:400px; margin:0 auto 2rem;">Generate comprehensive insights into your sales, inventory depletion, and user acquisition metrics.</p>
+            <button class="btn-save" style="padding:0.8rem 2rem; font-size:1rem;"><i class="fas fa-download" style="margin-right:0.5rem;"></i> Export Monthly Report</button>
+        </div>
+    </div>
+
+    <!-- Offers -->
+    <div class="table-section" id="tab-offers">
+        <div class="table-box" style="padding:4rem 2rem; text-align:center;">
+            <i class="fas fa-tags" style="font-size:4rem; color:#f97316; margin-bottom:1.5rem;"></i>
+            <h3 style="font-size:1.5rem; color:#e2e8f0; margin-bottom:0.5rem;">Promotions &amp; Offers</h3>
+            <p style="color:#64748b; font-size:0.95rem; max-width:400px; margin:0 auto 2rem;">Create discount codes, run festive sales, and manage loyalty rewards for your customers.</p>
+            <button class="btn-save" style="background:#f97316; padding:0.8rem 2rem; font-size:1rem;"><i class="fas fa-plus" style="margin-right:0.5rem;"></i> Create New Campaign</button>
+        </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="table-section" id="tab-settings">
+        <div class="table-box" style="padding:2.5rem;">
+            <h3 style="margin-bottom:2rem; font-size:1.3rem; color:#e2e8f0;"><i class="fas fa-cog" style="color:#a78bfa; margin-right:0.5rem;"></i> Store Settings</h3>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.5rem;">
+                <div>
+                    <label style="display:block; color:#94a3b8; font-size:0.8rem; margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Store Name</label>
+                    <input type="text" value="ComicTradersHub" style="width:100%; background:#0f172a; border:1px solid #334155; padding:0.8rem 1rem; border-radius:8px; color:#e2e8f0; outline:none;">
+                </div>
+                <div>
+                    <label style="display:block; color:#94a3b8; font-size:0.8rem; margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Contact Email</label>
+                    <input type="email" value="admin@comictraders.com" style="width:100%; background:#0f172a; border:1px solid #334155; padding:0.8rem 1rem; border-radius:8px; color:#e2e8f0; outline:none;">
+                </div>
+                <div>
+                    <label style="display:block; color:#94a3b8; font-size:0.8rem; margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Currency Symbol</label>
+                    <input type="text" value="&#8377;" style="width:100%; background:#0f172a; border:1px solid #334155; padding:0.8rem 1rem; border-radius:8px; color:#e2e8f0; outline:none;">
+                </div>
+                <div>
+                    <label style="display:block; color:#94a3b8; font-size:0.8rem; margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Base Shipping Fee</label>
+                    <input type="text" value="99" style="width:100%; background:#0f172a; border:1px solid #334155; padding:0.8rem 1rem; border-radius:8px; color:#e2e8f0; outline:none;">
+                </div>
+            </div>
+            <hr style="border:none; border-top:1px solid #334155; margin:2rem 0;">
+            <button class="btn-save" style="padding:0.8rem 2rem; font-size:1rem;"><i class="fas fa-save" style="margin-right:0.5rem;"></i> Save Configuration</button>
+        </div>
+    </div>
+
+    <!-- User Orders Modal -->
+    <div class="modal" id="userOrdersModal">
+        <div class="modal-content">
+            <h3>User Orders</h3>
+            <div id="userOrdersList"></div>
+            <div class="modal-buttons">
+                <button class="action-btn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>ComicTradersHub Admin &copy; 2024 &mdash; All data from comictraders.db</footer>
+
+    <script>
+        const API = 'http://localhost:3000';
+        let currentMessageId = null;
+        let currentUserId = null;
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.table-section').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        async function loadAll() {
+            await loadUsers();
+            await loadProducts();
+            await loadMessages();
+            await loadFaqs();
+            await loadOrders();
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(API + '/api/users');
+                const data = await res.json();
+                document.getElementById('totalUsers').textContent = data.length;
+                const tbody = document.getElementById('usersBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No users registered yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((u, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="name"><i class="fas fa-user-circle" style="color:#a78bfa;margin-right:0.4rem;"></i>${u.name}</td>
+                        <td>${u.email}</td>
+                        <td>${u.phone}</td>
+                        <td><span class="badge ${u.order_count > 0 ? 'answered' : 'pending'}">${u.order_count} orders</span></td>
+                        <td>${u.created_at}</td>
+                        <td>
+                            <button class="action-btn" onclick="viewUserOrders(${u.id})">View Orders</button>
+                            <button class="action-btn danger" onclick="deleteUser(${u.id})">Delete</button>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('usersBody').innerHTML = '<tr class="empty-row"><td colspan="7">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const res = await fetch(API + '/api/products');
+                const data = await res.json();
+                if(document.getElementById('totalProducts')) {
+                    document.getElementById('totalProducts').textContent = data.length;
+                }
+                const tbody = document.getElementById('productsBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No products found.</td></tr>'; return; }
+                tbody.innerHTML = data.map((p, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${p.image ? `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">` : '<div style="width:40px;height:40px;background:#334155;border-radius:6px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-image" style="color:#94a3b8;"></i></div>'}</td>
+                        <td class="name">${p.name}</td>
+                        <td><span style="color:#fbbf24;">${p.category}</span></td>
+                        <td style="color:#4ade80;font-weight:700;">₹${Number(p.price).toLocaleString('en-IN')}</td>
+                        <td><span style="color:${p.stock < 10 ? '#f87171' : '#cbd5e1'};font-weight:600;">${p.stock}</span></td>
+                        <td><span class="badge ${p.status === 'active' ? 'answered' : 'cancelled'}">${p.status}</span></td>
+                        <td>
+                            <button class="action-btn" onclick='openEditProductModal(${JSON.stringify(p)})'>Edit</button>
+                            <button class="action-btn danger" onclick="deleteProduct(${p.id})">Delete</button>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('productsBody').innerHTML = '<tr class="empty-row"><td colspan="8">Error loading products.</td></tr>';
+            }
+        }
+
+        function openAddProductModal() {
+            document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-plus"></i> Add Product';
+            document.getElementById('productId').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productStatus').value = 'active';
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        function openEditProductModal(p) {
+            document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Product';
+            document.getElementById('productId').value = p.id;
+            document.getElementById('productName').value = p.name;
+            document.getElementById('productCategory').value = p.category;
+            document.getElementById('productPrice').value = p.price;
+            document.getElementById('productStock').value = p.stock;
+            document.getElementById('productImage').value = p.image || '';
+            document.getElementById('productStatus').value = p.status || 'active';
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        async function saveProduct() {
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('productName').value.trim();
+            const category = document.getElementById('productCategory').value.trim();
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value) || 0;
+            const image = document.getElementById('productImage').value.trim();
+            const status = document.getElementById('productStatus').value;
+
+            if (!name || !category || isNaN(price)) return alert('Name, category and price are required.');
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? API + '/api/products/' + id : API + '/api/products';
+            
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, category, price, stock, image, status })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeModal();
+                    loadProducts();
+                } else alert(data.error || 'Failed to save product');
+            } catch(e) {
+                alert('Error saving product');
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Delete this product?')) return;
+            try {
+                await fetch(API + '/api/products/' + id, { method: 'DELETE' });
+                loadProducts();
+            } catch(e) {
+                alert('Error deleting product');
+            }
+        }
+
+        async function loadMessages() {
+            try {
+                const res = await fetch(API + '/api/messages');
+                const data = await res.json();
+                document.getElementById('totalMessages').textContent = data.length;
+                const tbody = document.getElementById('messagesBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No messages yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((m, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td class="name">${m.name}</td>
+                        <td>${m.email}</td>
+                        <td>${m.subject}</td>
+                        <td style="max-width:200px;">${m.message}</td>
+                        <td style="max-width:200px;">${m.reply || '<span style="color:#64748b;font-style:italic;">No reply yet</span>'}</td>
+                        <td><span class="badge ${m.status || 'unread'}">${m.status || 'unread'}</span></td>
+                        <td>${m.created_at}</td>
+                        <td>
+                            <button class="action-btn" onclick="replyToMessage(${m.id})">Reply</button>
+                            <button class="action-btn success" onclick="markAsRead(${m.id})">Mark Read</button>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('messagesBody').innerHTML = '<tr class="empty-row"><td colspan="9">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function loadFaqs() {
+            try {
+                const res = await fetch(API + '/api/faqs/all');
+                const data = await res.json();
+                document.getElementById('totalFaqs').textContent = data.length;
+                const tbody = document.getElementById('faqsBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No FAQs yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((f, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td style="max-width:220px;">${f.question}</td>
+                        <td>${f.asked_by}</td>
+                        <td style="max-width:220px;">${f.answer || '<span style="color:#475569;font-style:italic;">Not answered yet</span>'}</td>
+                        <td><span class="badge ${f.status === 'answered' ? 'answered' : 'pending'}">${f.status}</span></td>
+                        <td>${f.created_at}</td>
+                        <td>
+                            <button class="action-btn danger" onclick="deleteFaq(${f.id})">Delete</button>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('faqsBody').innerHTML = '<tr class="empty-row"><td colspan="7">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch(API + '/api/orders');
+                const data = await res.json();
+                document.getElementById('totalOrders').textContent = data.length;
+                const tbody = document.getElementById('ordersBody');
+                if (!data.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No orders yet.</td></tr>'; return; }
+                tbody.innerHTML = data.map((o, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${o.order_id}</td>
+                        <td>${o.customer_name}</td>
+                        <td>${o.customer_phone}</td>
+                        <td style="max-width:150px;">${JSON.parse(o.items || '[]').map(item => item.name).join(', ')}</td>
+                        <td>₹${o.total}</td>
+                        <td><span class="badge ${o.status === 'Delivered' ? 'answered' : 'pending'}">${o.status}</span></td>
+                        <td>${o.created_at}</td>
+                        <td>
+                            <select onchange="updateOrderStatus(${o.id}, this.value)" style="background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;padding:0.2rem;">
+                                <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            </select>
+                        </td>
+                    </tr>`).join('');
+            } catch(e) {
+                document.getElementById('ordersBody').innerHTML = '<tr class="empty-row"><td colspan="9">Server not running. Start with npm start.</td></tr>';
+            }
+        }
+
+        function filterTable(tableId, query) {
+            const rows = document.querySelectorAll('#' + tableId + ' tbody tr:not(.empty-row)');
+            const q = query.toLowerCase();
+            rows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+
+        function replyToMessage(id) {
+            currentMessageId = id;
+            document.getElementById('replyModal').classList.add('show');
+            document.getElementById('replyText').focus();
+        }
+
+        async function sendReply() {
+            const reply = document.getElementById('replyText').value.trim();
+            if (!reply) return;
+            
+            try {
+                await fetch(API + `/api/messages/${currentMessageId}/reply`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reply })
+                });
+                closeModal();
+                loadMessages();
+            } catch(e) {
+                alert('Error sending reply');
+            }
+        }
+
+        async function markAsRead(id) {
+            try {
+                await fetch(API + `/api/messages/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'read' })
+                });
+                loadMessages();
+            } catch(e) {
+                alert('Error updating status');
+            }
+        }
+
+        async function viewUserOrders(userId) {
+            try {
+                const res = await fetch(API + `/api/users/${userId}/orders`);
+                const orders = await res.json();
+                const ordersList = document.getElementById('userOrdersList');
+                
+                if (!orders.length) {
+                    ordersList.innerHTML = '<p style="color:#64748b;font-style:italic;">No orders found for this user.</p>';
+                } else {
+                    ordersList.innerHTML = orders.map(o => `
+                        <div style="background:#0f172a;padding:1rem;margin:0.5rem 0;border-radius:8px;border-left:4px solid #6d28d9;">
+                            <strong>Order: ${o.order_id}</strong><br>
+                            <span style="color:#64748b;">Items: ${JSON.parse(o.items || '[]').map(item => item.name).join(', ')}</span><br>
+                            <span style="color:#64748b;">Total: ₹${o.total} | Status: ${o.status}</span><br>
+                            <span style="color:#64748b;">Date: ${o.created_at}</span>
+                        </div>
+                    `).join('');
+                }
+                
+                document.getElementById('userOrdersModal').classList.add('show');
+            } catch(e) {
+                alert('Error loading user orders');
+            }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('Delete this user? This will also delete their orders.')) return;
+            try {
+                await fetch(API + `/api/users/${id}`, { method: 'DELETE' });
+                loadUsers();
+            } catch(e) {
+                alert('Error deleting user');
+            }
+        }
+
+        async function deleteFaq(id) {
+            if (!confirm('Delete this FAQ?')) return;
+            try {
+                await fetch(API + `/api/faqs/${id}`, { method: 'DELETE' });
+                loadFaqs();
+            } catch(e) {
+                alert('Error deleting FAQ');
+            }
+        }
+
+        async function updateOrderStatus(id, status) {
+            try {
+                await fetch(API + `/api/orders/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                loadOrders();
+            } catch(e) {
+                alert('Error updating order status');
+            }
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
+            document.getElementById('replyText').value = '';
+            currentMessageId = null;
+        }
+
+        // Guard: redirect to login if not authenticated
+        if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        loadAll();
+        setInterval(loadAll, 30000);
+    </script>
+</body>
+</html>

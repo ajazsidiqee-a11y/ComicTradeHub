@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ComicTradersHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f1f3f6; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Header */
+        header { background: #2874f0; padding: 15px 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .brand { color: white; text-decoration: none; font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; display: inline-flex; align-items: center; gap: 10px; }
+        .brand span { color: #ffe500; }
+        
+        /* E-commerce Container */
+        .ecom-box { display: flex; width: 100%; max-width: 850px; height: 560px; margin: 3.5rem auto auto; background: #fff; box-shadow: 0 2px 4px 0 rgba(0,0,0,.08); border-radius: 4px; overflow: hidden; }
+        
+        /* Left Sidebar (Flipkart Style) */
+        .ecom-left { flex: 0 0 40%; background: #2874f0; padding: 45px 35px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; }
+        .ecom-left h2 { font-size: 28px; font-weight: 600; margin-bottom: 15px; }
+        .ecom-left p { font-size: 18px; line-height: 1.5; color: #dbe4ff; }
+        
+        /* Right Form Area */
+        .ecom-right { flex: 1; padding: 45px 35px; position: relative; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* Panels */
+        .panel { display: none; animation: fadeIn 0.4s ease; width: 100%; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Floating Label Inputs */
+        .ecom-field { position: relative; margin-bottom: 20px; margin-top: 5px; }
+        .ecom-field input { width: 100%; border: none; border-bottom: 1px solid #e0e0e0; padding: 10px 0; font-family: 'Poppins', sans-serif; font-size: 15px; outline: none; color: #212121; background: transparent; transition: border-bottom 0.2s; }
+        .ecom-field input:focus { border-bottom: 2px solid #2874f0; padding-bottom: 9px; }
+        .ecom-field label { position: absolute; left: 0; top: 12px; color: #878787; font-size: 15px; transition: 0.2s ease all; pointer-events: none; }
+        .ecom-field input:focus ~ label, .ecom-field input:not(:placeholder-shown) ~ label { top: -14px; font-size: 12px; color: #2874f0; font-weight: 500; }
+        
+        .pass-wrap { position: relative; }
+        .toggle-pass { position: absolute; right: 0; top: 12px; color: #878787; cursor: pointer; font-size: 14px; }
+        .toggle-pass:hover { color: #2874f0; }
+        
+        .auth-err { font-size: 11px; color: #ff6161; display: block; margin-top: 4px; min-height: 14px; font-weight: 500; }
+        .auth-alert { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: 500; margin-bottom: 15px; display: none; }
+        .auth-success { background: #e8f5e9; border: 1px solid #c8e6c9; color: #2e7d32; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: 500; margin-bottom: 15px; display: none; }
+        
+        .terms { font-size: 12px; color: #878787; margin-top: 25px; margin-bottom: 15px; line-height: 1.5; }
+        .terms a { color: #2874f0; text-decoration: none; }
+        
+        .ecom-btn { background: #fb641b; color: #fff; width: 100%; padding: 14px; font-size: 15px; font-weight: 600; border: none; border-radius: 2px; cursor: pointer; box-shadow: 0 1px 2px 0 rgba(0,0,0,.2); display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
+        .ecom-btn:hover { background: #f05a13; }
+        .ecom-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        .ecom-switch { margin-top: auto; text-align: center; padding-top: 30px; }
+        .ecom-switch a { color: #2874f0; font-weight: 600; text-decoration: none; font-size: 14px; display: inline-block; padding: 10px; transition: transform 0.2s; }
+        .ecom-switch a:hover { transform: translateY(-2px); }
+        
+        .admin-link { position: absolute; top: 15px; right: 20px; font-size: 12px; color: #878787; text-decoration: none; font-weight: 500; }
+        .admin-link:hover { color: #2874f0; }
+
+        /* Post Login / Register Layouts */
+        .ecom-dash-header { font-size: 1.4rem; color: #212121; margin-bottom: 8px; font-weight: 600; }
+        .ecom-dash-desc { color: #878787; font-size: 0.9rem; margin-bottom: 25px; }
+        .ecom-dash-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .dash-card { border: 1px solid #e0e0e0; border-radius: 4px; padding: 15px; display: flex; align-items: center; gap: 12px; text-decoration: none; color: #212121; transition: box-shadow 0.2s, border-color 0.2s; }
+        .dash-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-color: #2874f0; }
+        .dash-card i { font-size: 1.5rem; color: #2874f0; }
+        .dash-card span { font-weight: 500; font-size: 0.95rem; }
+        
+        .promo-box { background: #f0f5ff; border: 1px dashed #2874f0; padding: 15px; border-radius: 4px; text-align: center; margin-bottom: 25px; }
+        .promo-box p { color: #2874f0; font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
+        .promo-code { display: inline-block; background: #fff; padding: 5px 15px; font-family: monospace; font-size: 1.1rem; font-weight: bold; color: #fb641b; border-radius: 2px; }
+
+        @media (max-width: 768px) {
+            .ecom-box { flex-direction: column; height: auto; min-height: calc(100vh - 65px); margin: 0; border-radius: 0; box-shadow: none; }
+            .ecom-left { flex: none; padding: 30px 20px; text-align: center; }
+            .ecom-left p { display: none; }
+            .ecom-left i { display: none; }
+            .ecom-right { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="brand">
+            <img src="images/logo.svg" style="height:35px;" onerror="this.style.display='none'"> ComicTraders<span>Hub</span>
+        </a>
+    </header>
+
+    <div class="ecom-box">
+        <div class="ecom-left">
+            <div>
+                <h2 id="ecomLeftTitle">Login</h2>
+                <p id="ecomLeftDesc">Get access to your Orders, Wishlist and Recommendations</p>
+            </div>
+            <div style="text-align:center; margin-bottom: 2rem;">
+                <i id="ecomLeftImg" class="fas fa-sign-in-alt" style="font-size: 8rem; color: rgba(255,255,255,0.15);"></i>
+            </div>
+        </div>
+        
+        <div class="ecom-right">
+            <a href="#" class="admin-link" onclick="switchModal('loginModal', 'adminLoginModal')"><i class="fas fa-shield-alt"></i> Admin</a>
+            
+            <!-- Login Panel -->
+            <div id="loginModal" class="panel active">
+                <div id="loginStep1">
+                    <div class="ecom-field">
+                        <input type="email" id="loginEmail" placeholder=" ">
+                        <label>Enter Email Address</label>
+                        <span class="auth-err" id="loginEmailErr"></span>
+                    </div>
+                    <div class="ecom-field pass-wrap">
+                        <input type="password" id="loginPass" placeholder=" ">
+                        <label>Enter Password</label>
+                        <i class="fas fa-eye toggle-pass" onclick="togglePass('loginPass',this)"></i>
+                        <span class="auth-err" id="loginPassErr"></span>
+                    </div>
+                    <div id="loginErr" class="auth-alert"></div>
+                    <p class="terms">By continuing, you agree to ComicTradersHub's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+                    <button class="ecom-btn" onclick="handleLoginStep1()">Login / Request OTP</button>
+                    <div class="ecom-switch">
+                        <a href="#" onclick="switchModal('loginModal','registerModal')">New to ComicTradersHub? Create an account</a>
+                    </div>
+                </div>
+                
+                <div id="loginStep2" style="display:none;">
+                    <h3 style="font-size:16px; margin-bottom:10px; color:#212121; font-weight:600;">Verify OTP</h3>
+                    <p style="font-size:13px; color:#878787; margin-bottom:20px;">An OTP has been sent to <strong id="loginOtpEmail" style="color:#212121;"></strong></p>
+                    <div class="ecom-field">
+                        <input type="text" id="loginOtp" placeholder=" " maxlength="6" style="letter-spacing:6px; font-size:18px; font-weight:600;">
+                        <label>Enter 6-digit OTP</label>
+                        <span class="auth-err" id="loginOtpErr"></span>
+                    </div>
+                    <div id="loginOtpAlert" class="auth-alert"></div>
+                    <button class="ecom-btn" onclick="handleLoginStep2()">Verify & Login</button>
+                    <div style="margin-top:25px; display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
+                        <a href="#" onclick="document.getElementById('loginStep1').style.display='block';document.getElementById('loginStep2').style.display='none';" style="color:#2874f0; text-decoration:none;"><i class="fas fa-arrow-left"></i> Go Back</a>
+                        <a href="#" onclick="handleLoginStep1()" style="color:#2874f0; text-decoration:none;">Resend OTP</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Panel -->
+            <div id="registerModal" class="panel">
+                <div id="regStep1">
+                    <div class="ecom-field">
+                        <input type="text" id="regName" placeholder=" ">
+                        <label>Full Name</label>
+                        <span class="auth-err" id="regNameErr"></span>
+                    </div>
+                    <div class="ecom-field">
+                        <input type="email" id="regEmail" placeholder=" ">
+                        <label>Email Address</label>
+                        <span class="auth-err" id="regEmailErr"></span>
+                    </div>
+                    <div class="ecom-field">
+                        <input type="tel" id="regPhone" placeholder=" ">
+                        <label>10-digit Mobile Number</label>
+                        <span class="auth-err" id="regPhoneErr"></span>
+                    </div>
+                    <div style="display:flex; gap:15px; margin-bottom: 5px;">
+                        <div class="ecom-field pass-wrap" style="flex:1; margin-bottom:0;">
+                            <input type="password" id="regPass" placeholder=" ">
+                            <label>Password (Min 6)</label>
+                            <i class="fas fa-eye toggle-pass" onclick="togglePass('regPass',this)"></i>
+                            <span class="auth-err" id="regPassErr"></span>
+                        </div>
+                        <div class="ecom-field pass-wrap" style="flex:1; margin-bottom:0;">
+                            <input type="password" id="regConfirm" placeholder=" ">
+                            <label>Confirm Pass</label>
+                            <i class="fas fa-eye toggle-pass" onclick="togglePass('regConfirm',this)"></i>
+                            <span class="auth-err" id="regConfirmErr"></span>
+                        </div>
+                    </div>
+                    <div id="regErr" class="auth-alert" style="margin-top: 10px;"></div>
+                    <button class="ecom-btn" onclick="handleRegisterStep1()" style="margin-top: 20px;">Send OTP</button>
+                    <div class="ecom-switch" style="padding-top: 20px;">
+                        <a href="#" onclick="switchModal('registerModal','loginModal')">Existing User? Log in</a>
+                    </div>
+                </div>
+                
+                <div id="regStep2" style="display:none;">
+                    <h3 style="font-size:16px; margin-bottom:10px; color:#212121; font-weight:600;">Verify Details</h3>
+                    <p style="font-size:13px; color:#878787; margin-bottom:20px;">OTP sent to <strong id="regOtpEmail" style="color:#212121;"></strong></p>
+                    <div class="ecom-field">
+                        <input type="text" id="regOtp" placeholder=" " maxlength="6" style="letter-spacing:6px; font-size:18px; font-weight:600;">
+                        <label>Enter 6-digit OTP</label>
+                        <span class="auth-err" id="regOtpErr"></span>
+                    </div>
+                    <div id="regOtpAlert" class="auth-alert"></div>
+                    <div id="regSuccess" class="auth-success"></div>
+                    <button class="ecom-btn" onclick="handleRegisterWithFlag()">Create Account</button>
+                    <div style="margin-top:25px; display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
+                        <a href="#" onclick="document.getElementById('regStep1').style.display='block';document.getElementById('regStep2').style.display='none';" style="color:#2874f0; text-decoration:none;"><i class="fas fa-arrow-left"></i> Change Email</a>
+                        <a href="#" id="regResendLink" onclick="resendRegisterOTP()" style="color:#2874f0; text-decoration:none;">Resend OTP</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div id="adminLoginModal" class="panel">
+                <div style="background:#f0f5ff; border:1px dashed #2874f0; border-radius:4px; padding:12px; font-size:12px; color:#2874f0; margin-bottom:20px;">
+                    <i class="fas fa-info-circle"></i> Employees & Staff portal only.
+                </div>
+                <div class="ecom-field">
+                    <input type="email" id="adminEmail" placeholder=" ">
+                    <label>Admin Email</label>
+                    <span class="auth-err" id="adminEmailErr"></span>
+                </div>
+                <div class="ecom-field pass-wrap">
+                    <input type="password" id="adminPass" placeholder=" ">
+                    <label>Admin Password</label>
+                    <i class="fas fa-eye toggle-pass" onclick="togglePass('adminPass',this)"></i>
+                    <span class="auth-err" id="adminPassErr"></span>
+                </div>
+                <div id="adminErr" class="auth-alert"></div>
+                <button class="ecom-btn" style="background:#212121; margin-top:20px;" onclick="handleAdminLogin()">Secure Login</button>
+                <div class="ecom-switch">
+                    <a href="#" onclick="switchModal('adminLoginModal','loginModal')">Go back to Customer Login</a>
+                </div>
+            </div>
+
+            <!-- User Registered State -->
+            <div id="registeredPanel" class="panel">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <i class="fas fa-check-circle" style="font-size:3rem; color:#26a541; margin-bottom:10px;"></i>
+                    <h2 class="ecom-dash-header">Account Created!</h2>
+                    <p class="ecom-dash-desc" style="margin-bottom:15px;">Welcome to ComicTradersHub, <span id="regDashUserName" style="font-weight:600; color:#212121;">User</span>.</p>
+                </div>
+                
+                <div class="promo-box">
+                    <p><i class="fas fa-gift"></i> Exclusive Welcome Bonus</p>
+                    <div style="font-size:12px; color:#878787; margin-bottom:10px;">Use this code for 10% off your first order</div>
+                    <div class="promo-code">WELCOME10</div>
+                </div>
+                
+                <a href="products.html" class="ecom-btn" style="text-decoration:none; margin-bottom: 10px;"><i class="fas fa-shopping-bag"></i> Start Shopping</a>
+                <a href="user-dashboard.html" class="ecom-btn" style="background:#fff; color:#212121; border:1px solid #e0e0e0; text-decoration:none; box-shadow:none;">Go to Dashboard</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="otp-auth.js"></script>
+    <script>
+        // E-commerce visual overrides for JS compatibility
+        window.setFieldState = function(inputId, ok) {
+            const el = document.getElementById(inputId);
+            if (!el) return;
+            el.style.border = 'none';
+            el.style.borderBottom = ok ? '1px solid #e0e0e0' : '2px solid #ff6161';
+            el.style.background = ok ? 'transparent' : '#fff5f5';
+        };
+
+        const originalOpenModal = window.openModal;
+        window.openModal = function(id) {
+            if (originalOpenModal && typeof originalOpenModal === 'function') originalOpenModal(id);
+            else document.getElementById(id).classList.add('active');
+            updateSidePane(id);
+        };
+        
+        window.switchModal = function(from, to) {
+            const fromEl = document.getElementById(from);
+            if (fromEl) fromEl.classList.remove('active');
+            const toEl = document.getElementById(to);
+            if (toEl) toEl.classList.add('active');
+            updateSidePane(to);
+        };
+
+        function updateSidePane(id) {
+            const title = document.getElementById('ecomLeftTitle');
+            const desc = document.getElementById('ecomLeftDesc');
+            const img = document.getElementById('ecomLeftImg');
+            
+            if (id === 'registerModal') {
+                title.textContent = "Looks like you're new here!";
+                desc.textContent = "Sign up with your details to get started";
+                img.className = "fas fa-user-plus";
+            } else if (id === 'adminLoginModal') {
+                title.textContent = "Admin Access";
+                desc.textContent = "Secure dashboard area. Unauthorized access is prohibited.";
+                img.className = "fas fa-user-shield";
+            } else {
+                title.textContent = "Login";
+                desc.textContent = "Get access to your Orders, Wishlist and Recommendations";
+                img.className = "fas fa-sign-in-alt";
+            }
+        }
+
+        function handleRegisterWithFlag() {
+            sessionStorage.setItem('cth_just_registered', 'true');
+            if (typeof handleRegisterStep2 === 'function') {
+                handleRegisterStep2();
+            }
+        }
+
+        function updateLoginDashboard() {
+            const user = JSON.parse(localStorage.getItem('cth_loggedIn'));
+            const justRegistered = sessionStorage.getItem('cth_just_registered');
+            
+            if (user && user.id) {
+                const isDashActive = document.getElementById('registeredPanel').classList.contains('active');
+                
+                if (!isDashActive) {
+                    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                    
+                    if (justRegistered === 'true') {
+                        document.getElementById('ecomLeftTitle').textContent = "Welcome back!";
+                        document.getElementById('ecomLeftDesc').textContent = "Manage your shopping easily.";
+                        document.getElementById('ecomLeftImg').className = "fas fa-user-check";
+                        document.getElementById('registeredPanel').classList.add('active');
+                        document.getElementById('regDashUserName').textContent = user.name.split(' ')[0];
+                    } else {
+                        window.location.href = 'user-dashboard.html';
+                    }
+                }
+            }
+        }
+
+        // Run immediately on script load to prevent any flashing of tabs
+        updateLoginDashboard();
+
+        // Also check periodically in case of cross-tab changes
+        setInterval(updateLoginDashboard, 500);
+    </script>
+</body>
+</html>
