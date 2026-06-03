@@ -328,7 +328,6 @@
                 <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
                 <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
-                <li><a href="admin-login.html"><i class="fas fa-user-shield"></i> Admin</a></li>
                 <li><a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Cart</a></li>
             </ul>
             <div class="auth-btns" id="authBtns">
@@ -350,7 +349,7 @@
             <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button></nav>
     </header>
 
-    <div class="mobile-nav" id="mobileNav"><div class="mobile-nav-inner"><button class="mobile-nav-close" onclick="toggleMobileNav()">&times;</button><a href="index.html"><i class="fas fa-home"></i> Home</a><a href="products.html"><i class="fas fa-box"></i> Products</a><a href="about.html"><i class="fas fa-info-circle"></i> About</a><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a><a href="admin-login.html"><i class="fas fa-user-shield"></i> Admin</a><div class="mob-divider"></div><a href="cart.html" class="mob-cart"><i class="fas fa-shopping-cart"></i> Cart</a><div class="mob-divider"></div><button class="mob-link" onclick="window.location.href='login.html'"><i class="fas fa-sign-in-alt"></i> Login</button><button class="mob-link" onclick="window.location.href='login.html'"><i class="fas fa-user-plus"></i> Sign Up</button></div></div><main>
+<div class="mobile-nav" id="mobileNav"><div class="mobile-nav-inner"><button class="mobile-nav-close" onclick="toggleMobileNav()">&times;</button><a href="index.html"><i class="fas fa-home"></i> Home</a><a href="products.html"><i class="fas fa-box"></i> Products</a><a href="about.html"><i class="fas fa-info-circle"></i> About</a><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a><div class="mob-divider"></div><a href="cart.html" class="mob-cart"><i class="fas fa-shopping-cart"></i> Cart</a><div class="mob-divider"></div><button class="mob-link" onclick="window.location.href='login.html'"><i class="fas fa-sign-in-alt"></i> Login</button><button class="mob-link" onclick="window.location.href='login.html'"><i class="fas fa-user-plus"></i> Sign Up</button></div></div><main>
 
         <!-- Hero -->
         <section class="hero">
@@ -592,7 +591,6 @@
                     <li><a href="products.html">Products</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="admin-login.html">Admin Login</a></li>
                 </ul>
             </div>
             <div>
@@ -610,151 +608,6 @@
         </div>
     </footer>
 
-    <!-- Admin Login Modal -->
-    <div class="auth-overlay" id="adminLoginModal">
-        <div class="auth-modal">
-            <div class="auth-modal-header" style="background:linear-gradient(135deg,#1a0533,#7c3aed);">
-                <h3><i class="fas fa-user-shield"></i> Admin Login</h3>
-                <button class="auth-close" onclick="closeModal('adminLoginModal')">&times;</button>
-            </div>
-            <div class="auth-modal-body">
-                <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.78rem;color:#5b21b6;margin-bottom:1rem;"><i class="fas fa-shield-alt" style="margin-right:0.4rem;"></i>Admin access only. Unauthorized login is prohibited.</div>
-                <div class="auth-field">
-                    <label>Admin Email</label>
-                    <input type="email" id="adminEmail">
-                    <span class="auth-err" id="adminEmailErr"></span>
-                </div>
-                <div class="auth-field">
-                    <label>Password</label>
-                    <div class="pass-wrap">
-                        <input type="password" id="adminPass">
-                        <i class="fas fa-eye toggle-pass" onclick="togglePass('adminPass',this)"></i>
-                    </div>
-                    <span class="auth-err" id="adminPassErr"></span>
-                </div>
-                <div id="adminErr" class="auth-alert" style="display:none;"></div>
-                <button class="auth-submit" style="background:linear-gradient(135deg,#5b21b6,#1a0533);" onclick="handleAdminLogin()"><i class="fas fa-user-shield"></i> Admin Login</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div class="auth-overlay" id="loginModal">
-        <div class="auth-modal">
-            <div class="auth-modal-header">
-                <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
-                <button class="auth-close" onclick="closeModal('loginModal')">&times;</button>
-            </div>
-            <div class="auth-modal-body">
-                <!-- Step 1: credentials -->
-                <div id="loginStep1">
-                    <div class="auth-field">
-                        <label>Email</label>
-                        <input type="email" id="loginEmail">
-                        <span class="auth-err" id="loginEmailErr"></span>
-                    </div>
-                    <div class="auth-field">
-                        <label>Password</label>
-                        <div class="pass-wrap">
-                            <input type="password" id="loginPass">
-                            <i class="fas fa-eye toggle-pass" onclick="togglePass('loginPass',this)"></i>
-                        </div>
-                        <span class="auth-err" id="loginPassErr"></span>
-                    </div>
-                    <div id="loginErr" class="auth-alert" style="display:none;"></div>
-                    <button class="auth-submit" onclick="handleLoginStep1()"><i class="fas fa-paper-plane"></i> Send OTP</button>
-                    <p class="auth-switch">Don't have an account? <a href="#" onclick="switchModal('loginModal','registerModal')">Sign Up here</a></p>
-                </div>
-                <!-- Step 2: OTP -->
-                <div id="loginStep2" style="display:none;">
-                    <div style="text-align:center;margin-bottom:1rem;">
-                        <i class="fas fa-envelope-open-text" style="font-size:2rem;color:#6d28d9;"></i>
-                        <p style="font-size:0.85rem;color:#6b7280;margin-top:0.5rem;">OTP sent to <strong id="loginOtpEmail"></strong></p>
-                    </div>
-                    <div class="auth-field">
-                        <label>Enter OTP</label>
-                        <input type="text" id="loginOtp" placeholder="6-digit OTP" maxlength="6" style="letter-spacing:6px;font-size:1.2rem;text-align:center;">
-                        <span class="auth-err" id="loginOtpErr"></span>
-                    </div>
-                    <div id="loginOtpAlert" class="auth-alert" style="display:none;"></div>
-                    <button class="auth-submit" onclick="handleLoginStep2()"><i class="fas fa-check-circle"></i> Verify & Login</button>
-                    <p style="text-align:center;font-size:0.8rem;margin-top:0.8rem;color:#9ca3af;">Didn't receive? <a href="#" onclick="handleLoginStep1()" style="color:#6d28d9;">Resend OTP</a></p>
-                    <p style="text-align:center;font-size:0.8rem;margin-top:0.3rem;"><a href="#" onclick="document.getElementById('loginStep1').style.display='block';document.getElementById('loginStep2').style.display='none';" style="color:#9ca3af;">? Back</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div class="auth-overlay" id="registerModal">
-        <div class="auth-modal">
-            <div class="auth-modal-header">
-                <h3><i class="fas fa-user-plus"></i> Sign Up</h3>
-                <button class="auth-close" onclick="closeModal('registerModal')">&times;</button>
-            </div>
-            <div class="auth-modal-body">
-                <!-- Step 1: form -->
-                <div id="regStep1">
-                    <div class="auth-field">
-                        <label>Full Name</label>
-                        <input type="text" id="regName" placeholder="Your full name">
-                        <span class="auth-err" id="regNameErr"></span>
-                    </div>
-                    <div class="auth-field">
-                        <label>Email</label>
-                        <input type="email" id="regEmail" placeholder="Your email address">
-                        <span class="auth-err" id="regEmailErr"></span>
-                    </div>
-                    <div class="auth-field">
-                        <label>Phone</label>
-                        <input type="tel" id="regPhone" placeholder="10-digit mobile number">
-                        <span class="auth-err" id="regPhoneErr"></span>
-                    </div>
-                    <div class="auth-field">
-                        <label>Password</label>
-                        <div class="pass-wrap">
-                            <input type="password" id="regPass" placeholder="Min 6 characters">
-                            <i class="fas fa-eye toggle-pass" onclick="togglePass('regPass',this)"></i>
-                        </div>
-                        <span class="auth-err" id="regPassErr"></span>
-                    </div>
-                    <div class="auth-field">
-                        <label>Confirm Password</label>
-                        <div class="pass-wrap">
-                            <input type="password" id="regConfirm" placeholder="Re-enter password">
-                            <i class="fas fa-eye toggle-pass" onclick="togglePass('regConfirm',this)"></i>
-                        </div>
-                        <span class="auth-err" id="regConfirmErr"></span>
-                    </div>
-                    <div id="regErr" class="auth-alert" style="display:none;"></div>
-                    <button class="auth-submit" onclick="handleRegisterStep1()"><i class="fas fa-paper-plane"></i> Send OTP</button>
-                    <p class="auth-switch">Already have an account? <a href="#" onclick="switchModal('registerModal','loginModal')">Login here</a></p>
-                </div>
-                <!-- Step 2: OTP -->
-                <div id="regStep2" style="display:none;">
-                    <div style="text-align:center;margin-bottom:1rem;">
-                        <i class="fas fa-envelope-open-text" style="font-size:2rem;color:#6d28d9;"></i>
-                        <p style="font-size:0.85rem;color:#6b7280;margin-top:0.5rem;">OTP sent to <strong id="regOtpEmail"></strong></p>
-                    </div>
-                    <div class="auth-field">
-                        <label>Enter OTP</label>
-                        <input type="text" id="regOtp" placeholder="6-digit OTP" maxlength="6" style="letter-spacing:6px;font-size:1.2rem;text-align:center;">
-                        <span class="auth-err" id="regOtpErr"></span>
-                    </div>
-                    <div id="regOtpAlert" class="auth-alert" style="display:none;"></div>
-                    <div id="regSuccess" class="auth-success" style="display:none;"></div>
-                    <button class="auth-submit" onclick="handleRegisterStep2()"><i class="fas fa-check-circle"></i> Verify & Create Account</button>
-                    <p style="text-align:center;font-size:0.8rem;margin-top:0.8rem;color:#9ca3af;">Didn't receive? <a href="#" id="regResendLink" onclick="resendRegisterOTP()" style="color:#6d28d9;">Resend OTP</a></p>
-                    <p style="text-align:center;font-size:0.8rem;margin-top:0.3rem;"><a href="#" onclick="document.getElementById('regStep1').style.display='block';document.getElementById('regStep2').style.display='none';" style="color:#9ca3af;">? Back</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    
-
- 
- 
     <script src="script.js"></script>
     <script src="otp-auth.js"></script>
 <script>
@@ -774,26 +627,6 @@
             i.classList.toggle('fas');
             i.style.color = i.classList.contains('fas') ? '#e74c3c' : '';
         });
-    });
-
-    // Mobile nav toggle
-    function toggleMobileNav() {
-        var nav = document.getElementById('mobileNav');
-        var btn = document.getElementById('hamburger');
-        if (!nav || !btn) return;
-        nav.classList.toggle('open');
-        btn.classList.toggle('open');
-        document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
-    }
-
-    // Close drawer when clicking backdrop
-    document.addEventListener('DOMContentLoaded', function() {
-        var overlay = document.getElementById('mobileNav');
-        if (overlay) {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) toggleMobileNav();
-            });
-        }
     });
 
     // Hero Stats Slider

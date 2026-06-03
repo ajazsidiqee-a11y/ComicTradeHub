@@ -1,4 +1,4 @@
-﻿﻿﻿﻿// Cart functionality
+﻿﻿﻿﻿﻿﻿// Cart functionality
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Add item to cart
@@ -273,5 +273,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+
+        // Close drawer when clicking backdrop
+        var overlay = document.getElementById('mobileNav');
+        if (overlay) {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) toggleMobileNav();
+            });
+        }
     }
 });
+
+// Mobile Nav Toggle
+function toggleMobileNav() {
+    var nav = document.getElementById('mobileNav');
+    var btn = document.getElementById('hamburger');
+    if (!nav || !btn) return;
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
