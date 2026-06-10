@@ -208,7 +208,7 @@ async function handleContactForm(event) {
     btn.textContent = 'Sending...';
 
     try {
-        const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '') ? 'http://localhost:3000' : '';
+        const API = 'https://comictradehub-api.onrender.com';
         const res  = await fetch(API + '/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, subject, message }) });
         const data = await res.json();
 

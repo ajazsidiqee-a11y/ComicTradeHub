@@ -1,4 +1,4 @@
-const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '') ? 'http://localhost:3000' : '';
+const API = 'https://comictradehub-api.onrender.com';
 
 function updateDateTime() {
     const now = new Date();
@@ -116,7 +116,7 @@ async function handleAdminLogin() {
 // ── Resend cooldown timer ──
 let regResendTimer = null;
 function startRegResendCooldown() {
-    let secs = 30;
+    let secs = 60;
     const link = document.getElementById('regResendLink');
     if (!link) return;
     link.style.pointerEvents = 'none'; link.style.color = '#9ca3af';
@@ -131,6 +131,42 @@ function startRegResendCooldown() {
             link.textContent = 'Resend OTP (' + secs + 's)';
         }
     }, 1000);
+}
+
+let loginResendTimer = null;
+function startLoginResendCooldown() {
+    let secs = 60;
+    const link = document.getElementById('loginResendLink');
+    if (!link) return;
+    link.style.pointerEvents = 'none'; link.style.color = '#9ca3af';
+    link.textContent = 'Resend OTP (' + secs + 's)';
+    loginResendTimer = setInterval(function() {
+        secs--;
+        if (secs <= 0) {
+            clearInterval(loginResendTimer);
+            link.style.pointerEvents = ''; link.style.color = '#2874f0';
+            link.textContent = 'Resend OTP';
+        } else {
+            link.textContent = 'Resend OTP (' + secs + 's)';
+        }
+    }, 1000);
+}
+
+async function resendLoginOTP() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) return;
+    try {
+        const res  = await fetch(API + '/api/otp/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, purpose: 'login' }) });
+        const data = await res.json();
+        const alert = document.getElementById('loginOtpAlert');
+        alert.style.display = 'block';
+        alert.style.color = data.success ? '#16a34a' : '#ef4444';
+        alert.textContent = data.success ? 'OTP resent to ' + email : (data.error || 'Failed to resend.');
+        if (data.success) startLoginResendCooldown();
+    } catch(e) {
+        const alert = document.getElementById('loginOtpAlert');
+        alert.style.display = 'block'; alert.textContent = 'Server error.';
+    }
 }
 
 async function resendRegisterOTP() {
@@ -273,6 +309,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    const loginOtpInput = document.getElementById('loginOtp');
+    if (loginOtpInput) {
+        loginOtpInput.addEventListener('input', function() {
+            if (this.value.replace(/\D/g,'').length === 6) {
+                this.value = this.value.replace(/\D/g,'');
+                handleLoginStep2();
+            }
+        });
+    }
+
     const regEmailInput = document.getElementById('regEmail');
     if (regEmailInput) {
         regEmailInput.addEventListener('input', function() {
@@ -320,6 +367,7 @@ async function handleLoginStep1() {
             document.getElementById('loginOtpEmail').textContent = email;
             document.getElementById('loginStep1').style.display = 'none';
             document.getElementById('loginStep2').style.display = 'block';
+            if (typeof startLoginResendCooldown === 'function') startLoginResendCooldown();
         }
     } catch(e) {
         console.error("Login Error:", e);

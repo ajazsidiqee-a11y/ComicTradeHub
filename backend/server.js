@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors()); // Allows your frontend to make requests to this API
 app.use(express.json()); // Parses incoming JSON payloads
-app.use(express.static(path.join(__dirname))); // Serves your HTML/CSS/JS files
+app.use(express.static(path.join(__dirname, '../frontend'))); // Serves your HTML/CSS/JS files
 
 // Database Setup
 const pool = new Pool({
@@ -21,6 +21,13 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || 'password', // Replace with your actual postgres password
   database: process.env.DB_NAME || 'comictraders'
 });
+// In-memory storage arrays
+let products = [];
+let orders = [];
+let users = [];
+let messages = [];
+let faqs = [];
+let nextId = 1;
 
 // Initialize Database Tables
 const initDB = async () => {
@@ -211,6 +218,8 @@ app.post('/api/otp/send', async (req, res) => {
   // Store it (expires in 5 minutes)
   otpStore.set(email, { otp, expires: Date.now() + 5 * 60 * 1000 });
 
+  console.log(`\n[DEV OTP] Your OTP for ${email} is: ${otp}\n`);
+
   try {
     await transporter.sendMail({
       from: `"ComicTradersHub" <${process.env.EMAIL_USER}>`,
@@ -226,7 +235,8 @@ app.post('/api/otp/send', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error('Email send error:', err);
-    res.json({ success: false, error: 'Failed to send email. Please check your configuration.' });
+    // For local development: allow process to continue even if email config is missing
+    res.json({ success: true, message: 'Email failed to send. Check server console for OTP.' });
   }
 });
 

@@ -139,7 +139,7 @@
                     <button class="ecom-btn" onclick="handleLoginStep2()">Verify & Login</button>
                     <div style="margin-top:25px; display:flex; justify-content:space-between; font-size:13px; font-weight:600;">
                         <a href="#" onclick="document.getElementById('loginStep1').style.display='block';document.getElementById('loginStep2').style.display='none';" style="color:#2874f0; text-decoration:none;"><i class="fas fa-arrow-left"></i> Go Back</a>
-                        <a href="#" onclick="handleLoginStep1()" style="color:#2874f0; text-decoration:none;">Resend OTP</a>
+                        <a href="#" id="loginResendLink" onclick="resendLoginOTP()" style="color:#2874f0; text-decoration:none;">Resend OTP</a>
                     </div>
                 </div>
             </div>
