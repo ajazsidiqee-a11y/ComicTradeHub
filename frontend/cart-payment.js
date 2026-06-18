@@ -253,7 +253,7 @@ function handleCheckout() {
         payment:        selectedPayment
     };
 
-    const API = 'https://comictradehub-api.onrender.com';
+    const API = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') ? 'http://localhost:3000' : 'https://comictradehub-api.onrender.com';
     fetch(API + '/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

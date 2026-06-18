@@ -1,7 +1,7 @@
 {
-  "name": "comictradershub",
+  "name": "comictradehub",
   "version": "1.0.0",
-  "description": "ComicTradersHub backend with MongoDB Atlas",
+  "description": "ComicTradeHub backend with MongoDB Atlas",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

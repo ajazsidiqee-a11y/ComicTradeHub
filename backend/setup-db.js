@@ -14,11 +14,11 @@ async function createDatabase() {
     try {
         await client.connect();
         console.log("Connected to PostgreSQL server...");
-        await client.query('CREATE DATABASE comictraders;');
-        console.log("✅ Success! Database 'comictraders' has been created.");
+        await client.query('CREATE DATABASE comictradehub;');
+        console.log("✅ Success! Database 'comictradehub' has been created.");
     } catch (err) {
         if (err.code === '42P04') {
-            console.log("⚠️ Database 'comictraders' already exists.");
+            console.log("⚠️ Database 'comictradehub' already exists.");
         } else {
             console.error("❌ Error creating database:", err.message);
         }

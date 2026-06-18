@@ -208,7 +208,7 @@ async function handleContactForm(event) {
     btn.textContent = 'Sending...';
 
     try {
-        const API = 'https://comictradehub-api.onrender.com';
+        const API = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') ? 'http://localhost:3000' : 'https://comictradehub-api.onrender.com';
         const res  = await fetch(API + '/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, subject, message }) });
         const data = await res.json();
 
@@ -247,6 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update cart display on page load
     updateCartDisplay();
     
+    // Fetch dynamic products from the backend and populate grid & categories
+    loadDynamicProducts();
+    
     // Add event listeners for product filters
     const categoryFilter = document.getElementById('category-filter');
     const priceFilter = document.getElementById('price-filter');
@@ -283,6 +286,81 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Load dynamic products from backend
+async function loadDynamicProducts() {
+    const productsGrid = document.querySelector('.products-grid');
+    const categoryFilter = document.getElementById('category-filter');
+    
+    // Only run if we are on the products page
+    if (!productsGrid) return;
+    
+    try {
+        const API = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') ? 'http://localhost:3000' : 'https://comictradehub-api.onrender.com';
+        const res = await fetch(API + '/api/products');
+        const dbProducts = await res.json();
+        
+        if (dbProducts && dbProducts.length > 0) {
+            // Collect existing categories from the dropdown
+            const existingCategories = new Set();
+            if (categoryFilter) {
+                Array.from(categoryFilter.options).forEach(opt => existingCategories.add(opt.value));
+            }
+            
+            // Append dynamic products to the grid
+            dbProducts.forEach(product => {
+                // Determine image source (fallback if not provided)
+                const imgSrc = product.image || 'https://via.placeholder.com/300x200?text=No+Image';
+                const catSlug = product.category.toLowerCase().replace(/\s+/g, '-');
+                
+                // Build product card
+                const card = document.createElement('div');
+                card.className = 'product-card dynamic-product';
+                card.dataset.category = catSlug;
+                card.dataset.price = product.price;
+                
+                card.innerHTML = `
+                    <div class="product-icon-banner" style="background:#f1f5f9; padding: 2rem;">
+                        <span class="cat-tag" style="background:#e2e8f0;color:#475569; z-index: 10;"><i class="fas fa-tag"></i> ${product.category}</span>
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')" style="z-index: 10;"><i class="fas fa-heart"></i></button>
+                        <img src="${imgSrc}" alt="${product.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+                    </div>
+                    <div class="product-info">
+                        <h4>${product.name}</h4>
+                        <div class="product-meta">
+                            <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                            <span class="review-count">(New)</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:#64748b; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${product.description || ''}</p>
+                        <div class="price-row">
+                            <div class="price">
+                                <span class="currency">&#8377;</span>${product.price}
+                            </div>
+                            <button class="add-to-cart" onclick="addToCart('${product.name}', ${product.price})">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(card);
+                
+                // Add new category to dropdown if it doesn't exist
+                if (categoryFilter && !existingCategories.has(catSlug)) {
+                    existingCategories.add(catSlug);
+                    const option = document.createElement('option');
+                    option.value = catSlug;
+                    option.innerHTML = `&#128274; ${product.category}`;
+                    categoryFilter.appendChild(option);
+                }
+            });
+            
+            // Re-run filter to ensure correct display state
+            filterProducts();
+        }
+    } catch (err) {
+        console.error('Failed to load dynamic products:', err);
+    }
+}
 
 // Mobile Nav Toggle
 function toggleMobileNav() {

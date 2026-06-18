@@ -14,13 +14,8 @@ app.use(express.json()); // Parses incoming JSON payloads
 app.use(express.static(path.join(__dirname, '../frontend'))); // Serves your HTML/CSS/JS files
 
 // Database Setup
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'password', // Replace with your actual postgres password
-  database: process.env.DB_NAME || 'comictraders'
-});
+const pool = require('./config/db');
+
 // In-memory storage arrays
 let products = [];
 let orders = [];
@@ -101,13 +96,33 @@ const initDB = async () => {
 initDB();
 
 // Mail setup
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+let transporter;
+const initializeTransporter = async () => {
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+    console.log('Using Gmail for email transport.');
+  } else {
+    console.log('No EMAIL_USER or EMAIL_PASS found. Creating an Ethereal test account for email testing...');
+    const account = await nodemailer.createTestAccount();
+    transporter = nodemailer.createTransport({
+      host: account.smtp.host,
+      port: account.smtp.port,
+      secure: account.smtp.secure,
+      auth: {
+        user: account.user,
+        pass: account.pass
+      }
+    });
+    console.log(`Ethereal test account created. Emails will be caught and previewable.`);
   }
-});
+};
+
 const otpStore = new Map(); // Store OTPs temporarily
 
 // ==========================================
@@ -197,7 +212,7 @@ app.post('/api/admin-login', (req, res) => {
   const { email, password } = req.body;
   
   // Fallback to default credentials if .env variables are not set
-  const adminEmail = process.env.ADMIN_USERNAME || 'admin@comictraders.com';
+  const adminEmail = process.env.ADMIN_USERNAME || 'admin@comictrade.com';
   const adminPass = process.env.ADMIN_PASSWORD || 'admin123';
 
   if (email === adminEmail && password === adminPass) {
@@ -221,17 +236,22 @@ app.post('/api/otp/send', async (req, res) => {
   console.log(`\n[DEV OTP] Your OTP for ${email} is: ${otp}\n`);
 
   try {
-    await transporter.sendMail({
-      from: `"ComicTradersHub" <${process.env.EMAIL_USER}>`,
+    const info = await transporter.sendMail({
+      from: `"ComicTradeHub" <${process.env.EMAIL_USER || 'test@ethereal.email'}>`,
       to: email,
-      subject: `${purpose === 'register' ? 'Sign Up' : 'Login'} OTP for ComicTradersHub`,
+      subject: `${purpose === 'register' ? 'Sign Up' : 'Login'} OTP for ComicTradeHub`,
       html: `<div style="font-family: sans-serif; max-width: 500px; margin: 0 auto;">
-               <h2 style="color: #6d28d9;">ComicTradersHub</h2>
+               <h2 style="color: #6d28d9;">ComicTradeHub</h2>
                <p>Your One-Time Password (OTP) for ${purpose === 'register' ? 'creating your account' : 'secure login'} is:</p>
                <h1 style="background: #f1f5f9; padding: 10px; text-align: center; letter-spacing: 5px; color: #1e293b; border-radius: 8px;">${otp}</h1>
                <p style="font-size: 0.8rem; color: #64748b;">This OTP is valid for 5 minutes. Do not share it with anyone.</p>
              </div>`
     });
+    
+    if (!process.env.EMAIL_USER) {
+      console.log(`\n[DEV OTP EMAIL PREVIEW]: ${nodemailer.getTestMessageUrl(info)}\n`);
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error('Email send error:', err);
@@ -419,6 +439,10 @@ app.delete('/api/faqs/:id', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`ComicTradersHub backend running at http://localhost:${port}`);
+initializeTransporter().then(() => {
+  app.listen(port, () => {
+    console.log(`ComicTradeHub backend running at http://localhost:${port}`);
+  });
+}).catch(err => {
+  console.error("Failed to initialize mail transporter:", err);
 });
